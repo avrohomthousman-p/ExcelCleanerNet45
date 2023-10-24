@@ -262,6 +262,7 @@ namespace ExcelCleanerNet45
                 case "ReportPayablesRegister":
                 case "AgedPayables":
                 case "AgedReceivables":
+                case "TrialBalance":
                     formulaGenerator = new FullTableFormulaGenerator();
                     formulaGenerator.SetDefenitionForBeyondFormulaRange(formulaGenerator.IsNonDataCell);
                     return formulaGenerator;
@@ -296,7 +297,6 @@ namespace ExcelCleanerNet45
                 case "RentRollAll": 
                 case "RentRollActivity_New":
                 case "RentRollActivity":
-                case "TrialBalance":
                 case "ReportCashReceiptsSummary":
                 case "JournalLedger":
                 case "AgedAccountsReceivable":

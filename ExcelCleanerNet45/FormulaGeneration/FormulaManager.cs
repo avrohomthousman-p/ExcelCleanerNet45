@@ -68,6 +68,12 @@ namespace ExcelCleanerNet45
                     //Many reports require some additional formulas that will be added by the SummaryRowFormulaGenerator
                     SummaryRowFormulaGenerator summaryGenerator = new SummaryRowFormulaGenerator();
                     summaryGenerator.InsertFormulas(worksheet, headers);
+
+
+
+                    //This causes the results of each formula to be cached in the file, so it will be visible
+                    //when the file is opened in protected mode.
+                    worksheet.Calculate();
                 }
 
 

@@ -620,7 +620,7 @@ namespace ExcelCleanerNet45
 
             //We don't want to delete any columns before the first data column becuase that might 
             //mess up the whitespace around minor headers
-            int firstDataColumn = FindFirstDataColumn(worksheet) + 1;
+            int firstDataColumn = FindFirstDataColumn(worksheet);
 
 
             for (int col = worksheet.Dimension.Columns; col > firstDataColumn; col--)

@@ -285,6 +285,10 @@ namespace ExcelCleanerNet45
             source.CopyStyles(dest);
             dest.Value = source.Value;
             source.Value = null;
+
+            //headers on the left side of the page must be aligned left or they display off the screen
+            dest.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
             return true;
         }
     }

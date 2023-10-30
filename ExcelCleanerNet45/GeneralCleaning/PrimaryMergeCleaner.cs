@@ -315,7 +315,7 @@ namespace ExcelCleanerNet45
 
                 case MergeType.MAIN_HEADER:
                     currentCells.Style.WrapText = false;
-                    currentCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    //currentCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                     ConvertContentsToText(currentCells); //Ensure that dates are displayed correctly
                     Console.WriteLine("major header at " + currentCells.Address);
                     break;
@@ -347,16 +347,19 @@ namespace ExcelCleanerNet45
 
 
             //If there is more than one line of text in a header, it should be split into
-            //multiple seperate headers.
+            //multiple seperate headers. Also, if the header is not aligned left, the text 
+            //should not be moved to the leftmost side of the formally merged range.
             if(mergeType == MergeType.MAIN_HEADER)
             {
                 SplitHeaderIntoMultipleRows(worksheet, currentCells);
+                MoveMajorHeadersToMatchFormatting(worksheet, currentCells);
+
             }
             //If there is a minor header that is aligned right, it usually should
             //stay on the right side of the now unmerged range
             else if(mergeType == MergeType.MINOR_HEADER)
             {
-                MoveCellToMatchFormatting(worksheet, currentCells);
+                MoveMinorHeaderToMatchFormatting(worksheet, currentCells);
             }
 
 
@@ -407,13 +410,61 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
-        /// Moves minor headers that were aligned right, to the rightmost cell in the specified cell range
+        /// Moves the text of the major header to the center of the formally merged range if it is aligned center,
+        /// and to the right if it is aligned right.
+        /// </summary>
+        /// <param name="worksheet">the worksheet currently being cleaned</param>
+        /// <param name="cellRange">the range that was just unmerged</param>
+        private void MoveMajorHeadersToMatchFormatting(ExcelWorksheet worksheet, ExcelRange cellRange)
+        {
+            if (cellRange.Style.HorizontalAlignment.Equals(ExcelHorizontalAlignment.Left))
+            {
+                return;
+            }
+
+
+            int row = cellRange.Start.Row;
+            int startCol = cellRange.Start.Column;
+            int endCol = cellRange.End.Column;
+
+            ExcelRange source = worksheet.Cells[row, startCol];
+            ExcelRange destination;
+
+
+
+            if (cellRange.Style.HorizontalAlignment.Equals(ExcelHorizontalAlignment.Center))
+            {
+                int middleColumn = startCol + ((endCol - startCol) / 2);
+                destination = worksheet.Cells[row, middleColumn];
+            }
+            else if (cellRange.Style.HorizontalAlignment.Equals(ExcelHorizontalAlignment.Right))
+            {
+                destination = worksheet.Cells[row, endCol];
+            }
+            else
+            {
+                return;
+            }
+
+
+
+            source.Copy(destination);
+            source.CopyStyles(destination);
+
+            source.Value = null;
+        }
+
+
+
+        /// <summary>
+        /// Moves minor headers that were aligned right, to the rightmost cell in the specified cell range, 
+        /// and minor headers aligned center to the center of the range.
         /// </summary>
         /// <param name="worksheet">the worksheet currently being cleaned</param>
         /// <param name="cellRange">the original range that held the minor header before the unmerge</param>
-        private void MoveCellToMatchFormatting(ExcelWorksheet worksheet, ExcelRange cellRange)
+        private void MoveMinorHeaderToMatchFormatting(ExcelWorksheet worksheet, ExcelRange cellRange)
         {
-            if (!cellRange.Style.HorizontalAlignment.Equals(ExcelHorizontalAlignment.Right))
+            if (cellRange.Style.HorizontalAlignment.Equals(ExcelHorizontalAlignment.Left))
             {
                 return;
             }
@@ -429,6 +480,7 @@ namespace ExcelCleanerNet45
 
 
             //if it is actually a data cell, its just considered a minor header because its in the wrong row
+            //then it gets moved to the nearest data column
             if (source.Text.StartsWith("$") || (source.Text.StartsWith("($") && source.Text.EndsWith(")")))
             {
                 int endOfDataColumn = GetNearestDataColumn(startCol, endCol).Item1;
@@ -441,9 +493,18 @@ namespace ExcelCleanerNet45
                 }
 
             }
-            else
+            else if(cellRange.Style.HorizontalAlignment.Equals(ExcelHorizontalAlignment.Right))
             {
                 destination = worksheet.Cells[row, endCol];
+            }
+            else if (cellRange.Style.HorizontalAlignment.Equals(ExcelHorizontalAlignment.Center))
+            {
+                int middleColumn = startCol + ((endCol - startCol) / 2);
+                destination = worksheet.Cells[row, middleColumn];
+            }
+            else
+            {
+                return;
             }
 
 

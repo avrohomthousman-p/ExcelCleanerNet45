@@ -448,6 +448,11 @@ namespace ExcelCleanerNet45
 
 
 
+            if(source.Address == destination.Address)
+            {
+                return;
+            }
+
             source.Copy(destination);
             source.CopyStyles(destination);
 

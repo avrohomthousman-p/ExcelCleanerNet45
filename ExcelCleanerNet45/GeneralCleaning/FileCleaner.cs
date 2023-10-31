@@ -275,11 +275,23 @@ namespace ExcelCleanerNet45
                         continue;
                     }
 
+
+                    //there are some reports (like ReportPayablesRegister) with cells that should contain check 
+                    //marks but instead have NaN in them (stored as a double). These need to be replaced with 
+                    //actual check marks
+                    if(cell.Value.GetType() == typeof(System.Double) && cell.Text == "NaN")
+                    {
+                        cell.Value = "ü";
+                        continue;
+                    }
+
+
                     //Skip Cells that already contain numbers
-                    if(cell.Value.GetType() != typeof(string))
+                    if (cell.Value.GetType() != typeof(string))
                     {
                         continue;
                     }
+
 
 
 

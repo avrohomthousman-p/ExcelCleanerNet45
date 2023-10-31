@@ -53,8 +53,9 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
 
                 if (HasTopBorder(cell))
                 {
-                    cell.Formula = FormulaManager.GenerateFormula(worksheet, formulaStart, i - 1, dataCol);
-                    cell.Style.Locked = true;
+                    string formula = FormulaManager.GenerateFormula(worksheet, formulaStart, i - 1, dataCol);
+
+                    FormulaManager.PutFormulaInCell(cell, formula);
 
                     formulaStart = i + 1;
                 }

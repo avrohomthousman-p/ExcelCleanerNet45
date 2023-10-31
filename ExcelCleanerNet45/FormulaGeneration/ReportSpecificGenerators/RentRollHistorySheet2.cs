@@ -150,8 +150,7 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
                 ExcelRange formulaDestination = SplitHeaderCell(worksheet, cell);
 
                 formulaDestination.Style.Numberformat.Format = "$#,##0.00;($#,##0.00)";
-                formulaDestination.Formula = formula;
-                formulaDestination.Style.Locked = true;
+                FormulaManager.PutFormulaInCell(formulaDestination, formula);
             }
         }
 

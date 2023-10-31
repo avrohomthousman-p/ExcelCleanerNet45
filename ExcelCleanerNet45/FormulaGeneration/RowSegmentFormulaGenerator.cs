@@ -168,9 +168,9 @@ namespace ExcelCleanerNet45
                     {     
                         startRow += CountEmptyCellsOnTop(worksheet, startRow, endRow, col); //Skip the whitespace on top
                     }
-                    cell.Formula = FormulaManager.GenerateFormula(worksheet, startRow, endRow - 1, col);
-                    cell.Style.Locked = true;
-                    Console.WriteLine("Cell " + cell.Address + " has been given this formula: " + cell.Formula);
+                    string formula = FormulaManager.GenerateFormula(worksheet, startRow, endRow - 1, col);
+
+                    FormulaManager.PutFormulaInCell(cell, formula);
                 }
                 else if (!FormulaManager.IsEmptyCell(cell))
                 {

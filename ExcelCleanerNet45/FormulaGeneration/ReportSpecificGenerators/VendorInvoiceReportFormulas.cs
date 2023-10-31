@@ -113,10 +113,10 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
 
                     if(summaryCell != null)
                     {
-                        summaryCell.Formula = BuildSectionFormula(worksheet, summaryCell.Start.Row, summaryCell.Start.Column + 1);
-                        summaryCell.Style.Locked = true;
+                        string formula = BuildSectionFormula(worksheet, summaryCell.Start.Row, summaryCell.Start.Column + 1);
                         summaryCell.Style.Numberformat.Format = "$#,##0.00;($#,##0.00)";
-                        Console.WriteLine("Cell " + cell.Address + " has been given this formula: " + cell.Formula);
+
+                        FormulaManager.PutFormulaInCell(summaryCell, formula);
                     }
                 }
             }

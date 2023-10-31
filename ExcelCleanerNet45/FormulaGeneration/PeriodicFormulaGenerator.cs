@@ -180,8 +180,10 @@ namespace ExcelCleanerNet45
             //Insert formulas
             ExcelRange summaryCell = worksheet.Cells[summaryRow, dataCol];
             Console.WriteLine("adding formula to " + summaryCell.Address);
-            summaryCell.Formula = FormulaManager.GenerateFormula(worksheet, start, summaryRow - 1, dataCol);
-            summaryCell.Style.Locked = true;
+
+            string formula = FormulaManager.GenerateFormula(worksheet, start, summaryRow - 1, dataCol);
+
+            FormulaManager.PutFormulaInCell(summaryCell, formula, false);
         }
 
 

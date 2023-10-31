@@ -38,6 +38,8 @@ namespace ExcelCleanerNet45.FormulaGeneration
                 //cell.Formula = BuildFormula(worksheet, iter.GetCurrentRow(), iter.GetCurrentCol());
                 cell.CreateArrayFormula(BuildFormula(worksheet, iter.GetCurrentRow(), iter.GetCurrentCol()));
                 cell.Style.Locked = true;
+                cell.Style.Hidden = false;
+                cell.Calculate();
 
                 Console.WriteLine("Cell " + cell.Address + " has been given this formula: " + cell.Formula);
             }

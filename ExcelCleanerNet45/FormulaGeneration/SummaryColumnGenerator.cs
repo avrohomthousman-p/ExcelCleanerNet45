@@ -184,9 +184,8 @@ namespace ExcelCleanerNet45.FormulaGeneration
             {
                 if (dataCellDef(cell))
                 {
-                    cell.Formula = BuildFormula(worksheet, otherCols, cell.Start.Row);
-                    cell.Style.Hidden = false;
-                    cell.Style.Locked = true;
+                    string formula = BuildFormula(worksheet, otherCols, cell.Start.Row);
+                    FormulaManager.PutFormulaInCell(cell, formula);
                 }
             }
         }

@@ -113,10 +113,9 @@ namespace ExcelCleanerNet45
 
                 int topRowOfRange = FindTopRowOfFormulaRange(worksheet, row, col);
 
-                cell.Formula = FormulaManager.GenerateFormula(worksheet, topRowOfRange, row - 1, iter.GetCurrentCol());
-                cell.Style.Locked = true;
+                string formula = FormulaManager.GenerateFormula(worksheet, topRowOfRange, row - 1, iter.GetCurrentCol());
 
-                Console.WriteLine("Cell " + cell.Address + " has been given this formula: " + cell.Formula);
+                FormulaManager.PutFormulaInCell(cell, formula);
             }
 
         }

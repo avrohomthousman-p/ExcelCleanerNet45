@@ -68,12 +68,6 @@ namespace ExcelCleanerNet45
                     //Many reports require some additional formulas that will be added by the SummaryRowFormulaGenerator
                     SummaryRowFormulaGenerator summaryGenerator = new SummaryRowFormulaGenerator();
                     summaryGenerator.InsertFormulas(worksheet, headers);
-
-
-
-                    //This causes the results of each formula to be cached in the file, so it will be visible
-                    //when the file is opened in protected mode.
-                    worksheet.Calculate();
                 }
 
 
@@ -183,6 +177,32 @@ namespace ExcelCleanerNet45
             ExcelRange cells = worksheet.Cells[startRow, col, endRow, col];
 
             return "SUM(" + cells.Address + ")";
+        }
+
+
+
+
+        /// <summary>
+        /// Inserts the specified formula into the cell, and performs any addiotional operations accosiated with that task
+        /// </summary>
+        /// <param name="cell">the cell recieving the formula</param>
+        /// <param name="formula">the formula to be inserted in the cell</param>
+        /// <param name="output">optional argument. If true, a console log will be printed displaying the formula added</param>
+        internal static void PutFormulaInCell(ExcelRange cell, string formula, bool output = true)
+        {
+            cell.Formula = formula;
+            cell.Style.Locked = true;
+            cell.Style.Hidden = false;
+
+            //This causes the results of each formula to be cached in the file, so it will be visible
+            //when the file is opened in protected mode.
+            cell.Calculate();
+
+
+            if (output)
+            {
+                Console.WriteLine("Cell " + cell.Address + " has been given this formula: " + cell.Formula);
+            }
         }
 
 

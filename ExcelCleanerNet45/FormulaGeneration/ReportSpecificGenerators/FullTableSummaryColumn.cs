@@ -64,8 +64,9 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
             foreach (ExcelRange cell in summaryCells)
             {
                 int startColumn = GetFormulaStartColumn(worksheet, cell.Start.Row, col);
-                cell.Formula = BuildFormula(worksheet, cell.Start.Row, startColumn, col - 1);
-                cell.Style.Locked = true;
+                string formula = BuildFormula(worksheet, cell.Start.Row, startColumn, col - 1);
+
+                FormulaManager.PutFormulaInCell(cell, formula);
             }
         }
 

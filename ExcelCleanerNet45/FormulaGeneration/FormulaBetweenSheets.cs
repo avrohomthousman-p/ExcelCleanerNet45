@@ -54,10 +54,9 @@ namespace ExcelCleanerNet45.FormulaGeneration
                 }
 
                 summaryCellNum++;
-                cell.Formula = BuildFormula(workbook, sheetsToAdd, isNegative, summaryCellNum, mainWorksheet.Index);
-                cell.Style.Locked = true;
+                string formula = BuildFormula(workbook, sheetsToAdd, isNegative, summaryCellNum, mainWorksheet.Index);
 
-                Console.WriteLine("Cell " + cell.Address + " has been given this formula: " + cell.Formula);
+                FormulaManager.PutFormulaInCell(cell, formula);
             }
         }
 

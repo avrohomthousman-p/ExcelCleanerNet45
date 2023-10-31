@@ -93,10 +93,9 @@ namespace ExcelCleanerNet45
 
 
                 //now add the formula to the cell
-                formulaCell.Formula = BuildFormula(worksheet, dataRows, dataColumn);
-                formulaCell.Style.Locked = true;
+                string formula = BuildFormula(worksheet, dataRows, dataColumn);
 
-                Console.WriteLine("Cell " + formulaCell.Address + " has been given this formula: " + formulaCell.Formula);
+                FormulaManager.PutFormulaInCell(formulaCell, formula);
             }
         }
 

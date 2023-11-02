@@ -202,6 +202,9 @@ namespace ExcelCleanerNet45
                     switch (worksheetNum)
                     {
                         case 2:
+                            //This report has multiple tables that are organized in different ways. We need 
+                            //two different formula generators to ensure that all tables get done correctly
+
                             FullTableFormulaGenerator first = new FullTableFormulaGenerator();
                             RowSegmentFormulaGenerator second = new RowSegmentFormulaGenerator();
                             IsDataCell dataCellDef = new IsDataCell(cell => 
@@ -222,6 +225,39 @@ namespace ExcelCleanerNet45
                             return new MultiFormulaGenerator(new PeriodicFormulaGenerator(), new SumOtherSums(), new FormulaBetweenSheets());
                         default:
                             return new MultiFormulaGenerator(new PeriodicFormulaGenerator(), new SumOtherSums());
+                    }
+
+
+
+
+                case "RentRollAll":
+                    switch (worksheetNum)
+                    {
+                        case 1:
+                            //This report has multiple tables that are organized in different ways. We need 
+                            //two different formula generators to ensure that all tables get done correctly
+
+                            FullTableFormulaGenerator first = new FullTableFormulaGenerator();
+                            RowSegmentFormulaGenerator second = new RowSegmentFormulaGenerator();
+                            IsDataCell dataCellDef = new IsDataCell(cell =>
+                                    FormulaManager.IsDollarValue(cell)
+                                    || FormulaManager.IsIntegerWithCommas(cell)
+                                    || FormulaManager.IsPercentage(cell)
+                                    || FormulaManager.CellHasFormula(cell));
+
+
+                            first.SetDefenitionForBeyondFormulaRange(first.IsNonDataCell);
+
+                            MultiFormulaGenerator generator = new MultiFormulaGenerator(first, second);
+                            generator.SetDataCellDefenition(dataCellDef);
+                            return generator;
+
+
+
+                        default:
+                            return new FullTableFormulaGenerator();
+
+
                     }
 
 
@@ -294,7 +330,6 @@ namespace ExcelCleanerNet45
                 case "ReportTenantBal":
                 case "ProfitAndLossStatementByPeriod":
                 case "LedgerReport":
-                case "RentRollAll": 
                 case "RentRollActivity_New":
                 case "RentRollActivity":
                 case "ReportCashReceiptsSummary":
@@ -537,6 +572,17 @@ namespace ExcelCleanerNet45
 
 
 
+                case "RentRollAll":
+                    switch (worksheetNum)
+                    {
+                        case 1:
+                            return new string[] { "1Total:", "2Subtotals=Total:" };
+
+                        default:
+                            return new string[] { "Total:" };
+                    }
+
+
 
                 case "ProfitAndLossStatementDrillThrough":
                     return new string[] { "Expense=Total Expense", "Income=Total Income", 
@@ -586,7 +632,6 @@ namespace ExcelCleanerNet45
                 case "UnitInvoiceReport":
                 case "RentRollPortfolio":
                 case "TrialBalance":
-                case "RentRollAll":
                     return new string[] { "Total:" };
 
 

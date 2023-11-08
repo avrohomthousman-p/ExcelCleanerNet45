@@ -606,7 +606,7 @@ namespace ExcelCleanerNet45
                     switch (worksheetNum)
                     {
                         case 0:
-                            return new string[] { "1r=[A-Z0-9]+", "1Balance", "2Total For Commons at( [A-Z][a-z]+)+:" };
+                            return new string[] { "1r=[A-Z0-9]+", "1Balance", "2Total For ([A-Z][a-z]+)( [A-Z]?[a-z]+)+:" };
 
                         default:
                             return new string[] { "Total" };

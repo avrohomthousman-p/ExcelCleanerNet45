@@ -239,9 +239,11 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
 
                 vacant.Formula = vacantNumber.Address + " / " + total;
                 vacant.Style.Locked = true;
+                vacant.Calculate();
 
                 occupied.Formula = occupiedNumber.Address + " / " + total;
                 occupied.Style.Locked = true;
+                occupied.Calculate();
             }
         }
 

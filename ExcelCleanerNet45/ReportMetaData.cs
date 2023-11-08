@@ -255,7 +255,9 @@ namespace ExcelCleanerNet45
 
 
                         default:
-                            return new FullTableFormulaGenerator();
+                            var fullTableGen = new FullTableFormulaGenerator();
+                            fullTableGen.SetDefenitionForBeyondFormulaRange(fullTableGen.IsNonDataCell);
+                            return fullTableGen;
 
 
                     }

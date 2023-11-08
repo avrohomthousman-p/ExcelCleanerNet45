@@ -169,6 +169,26 @@ namespace ExcelCleanerNet45
 
 
 
+
+        /// <summary>
+        /// Copys styles from the source to destination cell, but does not copy color, borders, or cell content
+        /// </summary>
+        /// <param name="source">the cell whose style we should use</param>
+        /// <param name="destination">the cell that should recieve the style</param>
+        protected virtual void CopyCellStyles(ExcelRange source, ExcelRange destination)
+        {
+            destination.Style.HorizontalAlignment = source.Style.HorizontalAlignment;
+            destination.Style.VerticalAlignment = source.Style.VerticalAlignment;
+
+            destination.Style.Font.Bold = source.Style.Font.Bold;
+            destination.Style.Font.Size = source.Style.Font.Size;
+            destination.Style.Font.Name = source.Style.Font.Name;
+            destination.Style.Font.Scheme = source.Style.Font.Scheme;
+            destination.Style.Font.Charset = source.Style.Font.Charset;
+        }
+
+
+
         /// <summary>
         /// Generates A Color Object from an ARGB string.
         /// </summary>
@@ -237,7 +257,7 @@ namespace ExcelCleanerNet45
                 int indexOfText = rowNum - startRow;
                 currentCell.SetCellValue(0, 0, linesOfText[indexOfText]);
 
-                cells.CopyStyles(currentCell);
+                CopyCellStyles(cells, currentCell);
             }
         }
 

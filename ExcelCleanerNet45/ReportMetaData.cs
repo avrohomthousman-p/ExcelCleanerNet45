@@ -21,6 +21,7 @@ namespace ExcelCleanerNet45
         private static readonly string anyMonth = "(January|February|March|April|May|June|July|August|September|October|November|December)";
         private static readonly string anyDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
         private static readonly string anyYear = "[12]\\d\\d\\d";
+        private static readonly string anyProperty = "([A-Z][a-z]+)( (([A-Z][a-z]+)|(at)))*";
 
 
 
@@ -433,7 +434,7 @@ namespace ExcelCleanerNet45
                             return new string[] { "Total:" };
 
                         case 1:
-                            return new string[] { "Total For ([A-Z][a-z]+)( [A-Z][a-z]+)*:" };
+                            return new string[] { $"Total For {anyProperty}:" };
 
                         default:
                             return new string[0];
@@ -447,11 +448,11 @@ namespace ExcelCleanerNet45
                     {
                         case 0:
                             return new string[] { "Total Tenant Receivables:", "Total Other Receivables:", 
-                                "Total For (January|February|March|April|May|June|July|August|September|October|November|December) [12]\\d\\d\\d:~Total Tenant Receivables:,Total Other Receivables:",
-                                "Total For Commons at White Marsh:~Total For (January|February|March|April|May|June|July|August|September|October|November|December) [12]\\d\\d\\d:" };
+                                $"Total For {anyMonth} [12]\\d\\d\\d:~Total Tenant Receivables:,Total Other Receivables:",
+                                $"Total For {anyProperty}:~Total For {anyMonth} [12]\\d\\d\\d:" };
 
                         default:
-                            return new string[0];
+                            return new string[] { "Total Tenant Receivables:" };
                     }
 
 

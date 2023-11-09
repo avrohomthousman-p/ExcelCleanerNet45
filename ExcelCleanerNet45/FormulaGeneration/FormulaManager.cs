@@ -46,7 +46,7 @@ namespace ExcelCleanerNet45
 
 
                     //Get the formula generator object that will insert the formulas
-                    IFormulaGenerator formulaGenerator = ReportMetaData.ChooseFormulaGenerator(reportName, i);
+                    IFormulaGenerator formulaGenerator = ReportMetaData.ChooseFormulaGenerator(reportName, i, package.Workbook);
 
 
 
@@ -58,7 +58,7 @@ namespace ExcelCleanerNet45
 
 
                     //get the arguments that are required for the formula generator
-                    headers = ReportMetaData.GetFormulaGenerationArguments(reportName, i);
+                    headers = ReportMetaData.GetFormulaGenerationArguments(reportName, i, package.Workbook);
 
 
                     //Actually add the formulas

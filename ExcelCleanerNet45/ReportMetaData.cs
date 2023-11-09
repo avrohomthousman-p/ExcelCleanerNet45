@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.Xml;
 using System.Text.RegularExpressions;
+using OfficeOpenXml;
 
 namespace ExcelCleanerNet45
 {
@@ -38,6 +39,7 @@ namespace ExcelCleanerNet45
             {
                 case "TrialBalance":
                 case "TrialBalanceVariance":
+                case "ProfitAndLossStatementDrillthrough":
                 case "ProfitAndLossStatementDrillThrough":
                 case "BalanceSheetDrillthrough":
                 case "CashFlow":
@@ -120,11 +122,12 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="reportName">the name of the report that needs formulas</param>
         /// <param name="worksheetNum">the index of the worksheet that needs formulas</param>
+        /// <param name="workbook">the full workbook we are in. Sometimes needed to check on how many worksheets there are</param>
         /// <returns>
         /// an implemenation of the IFormulaGenerator interface that should be used to add the formulas,
         /// or null if the worksheet doesnt need formulas
         /// </returns>
-        internal static IFormulaGenerator ChooseFormulaGenerator(string reportName, int worksheetNum)
+        internal static IFormulaGenerator ChooseFormulaGenerator(string reportName, int worksheetNum, ExcelWorkbook workbook)
         {
 
             FullTableFormulaGenerator formulaGenerator;
@@ -138,6 +141,7 @@ namespace ExcelCleanerNet45
                 case "PayablesAccountReport":
                 case "ProfitAndLossBudget":
                 case "BalanceSheetPropBreakdown":
+                case "ProfitAndLossStatementDrillthrough":
                 case "ProfitAndLossStatementDrillThrough":
                 case "ProfitAndLossExtendedVariance":
                     return new RowSegmentFormulaGenerator();
@@ -199,34 +203,41 @@ namespace ExcelCleanerNet45
 
 
 
+
+                //This report needs to be done a little differently becuase it doesnt always have the same number of worksheets
                 case "RentRollAllItemized":
-                    switch (worksheetNum)
+                    if (worksheetNum == workbook.Worksheets.Count - 1) //for the last worksheet
                     {
-                        case 2:
-                            //This report has multiple tables that are organized in different ways. We need 
-                            //two different formula generators to ensure that all tables get done correctly
+                        //This report has multiple tables that are organized in different ways. We need 
+                        //two different formula generators to ensure that all tables get done correctly
 
-                            FullTableFormulaGenerator first = new FullTableFormulaGenerator();
-                            RowSegmentFormulaGenerator second = new RowSegmentFormulaGenerator();
-                            IsDataCell dataCellDef = new IsDataCell(cell => 
-                                    FormulaManager.IsDollarValue(cell) 
-                                    || FormulaManager.IsIntegerWithCommas(cell) 
-                                    || FormulaManager.IsPercentage(cell)
-                                    || FormulaManager.CellHasFormula(cell));
-
-
-                            first.SetDefenitionForBeyondFormulaRange(first.IsNonDataCell);
-
-                            MultiFormulaGenerator generator = new MultiFormulaGenerator(first, second);
-                            generator.SetDataCellDefenition(dataCellDef);
-                            return generator;
+                        FullTableFormulaGenerator first = new FullTableFormulaGenerator();
+                        RowSegmentFormulaGenerator second = new RowSegmentFormulaGenerator();
+                        IsDataCell dataCellDef = new IsDataCell(cell =>
+                                FormulaManager.IsDollarValue(cell)
+                                || FormulaManager.IsIntegerWithCommas(cell)
+                                || FormulaManager.IsPercentage(cell)
+                                || FormulaManager.CellHasFormula(cell));
 
 
-                        case 1:
-                            return new MultiFormulaGenerator(new PeriodicFormulaGenerator(), new SumOtherSums(), new FormulaBetweenSheets());
-                        default:
-                            return new MultiFormulaGenerator(new PeriodicFormulaGenerator(), new SumOtherSums());
+                        first.SetDefenitionForBeyondFormulaRange(first.IsNonDataCell);
+
+                        MultiFormulaGenerator generator = new MultiFormulaGenerator(first, second);
+                        generator.SetDataCellDefenition(dataCellDef);
+                        return generator;
+                    } 
+                    else if (worksheetNum == 1)
+                    {
+                        return new MultiFormulaGenerator(new PeriodicFormulaGenerator(), 
+                            new SumOtherSums(), new FormulaBetweenSheets());
                     }
+
+                    else
+                    {
+                        return new MultiFormulaGenerator(new PeriodicFormulaGenerator(), new SumOtherSums());
+                    }
+                            
+                    
 
 
 
@@ -392,11 +403,12 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="reportName">the name of the report getting the formulas</param>
         /// <param name="worksheetNum">the index of the worksheet getting the formulas</param>
+        /// <param name="workbook">The workbook being given formulas. Sometimes needed to tell how many worksheets there are</param>
         /// <returns>
         /// a list of strings that should be passed to the formula generator when formulas are being added,
         /// or null if the worksheet does not require formulas
         /// </returns>
-        internal static string[] GetFormulaGenerationArguments(string reportName, int worksheetNum)
+        internal static string[] GetFormulaGenerationArguments(string reportName, int worksheetNum, ExcelWorkbook workbook)
         {
             switch (reportName)
             {
@@ -556,22 +568,26 @@ namespace ExcelCleanerNet45
 
 
 
+                //This report needs to be done a little differently becuase it differs in the number of worksheets
                 case "RentRollAllItemized":
-                    switch (worksheetNum)
+                    if(worksheetNum == workbook.Worksheets.Count - 1) //if we are on the last worksheet
                     {
-
-                        case 0:
-                            return new string[] { "1r=[A-Z]-\\d\\d", "1Monthly Charge", "1Annual Charge", "2Total:" };
-
-                        case 1:
-                            return new string[] { "1r=[A-Z]-\\d\\d", "1Monthly Charge", "1Annual Charge", "2Total:", "3sheet0", "3sheet1" };
-
-                        case 2:
-                            return new string[] { "1Total:", "2Subtotals=Total:" };
-
-                        default:
-                            return new string[0];
+                        return new string[] { "1Total:", "2Subtotals=Total:" };
                     }
+                    else if(worksheetNum == 1)
+                    {
+                        return new string[] { "1r=[A-Z]-\\d\\d", "1Monthly Charge", "1Annual Charge", "2Total:", "3sheet0", "3sheet1" };
+                    }
+                    else if(worksheetNum == 0)
+                    {
+                        return new string[] { "1r=[A-Z]-\\d\\d", "1Monthly Charge", "1Annual Charge", "2Total:" };
+                    }
+                    else
+                    {
+                        return new string[0];
+                    }
+
+
 
 
 
@@ -587,6 +603,7 @@ namespace ExcelCleanerNet45
 
 
 
+                case "ProfitAndLossStatementDrillthrough":
                 case "ProfitAndLossStatementDrillThrough":
                     return new string[] { "Expense=Total Expense", "Income=Total Income", 
                         "Net Operating Income~-Total Expense,Total Income", "Net Income~Net Operating Income,-Total Expense" };

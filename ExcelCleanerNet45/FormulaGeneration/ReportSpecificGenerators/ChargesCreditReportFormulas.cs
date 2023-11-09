@@ -85,7 +85,7 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
             dataDestination.SetCellValue(0, 0, data);
             FormatAsDataCell(dataDestination);
 
-            return header;
+            return header.Trim();
         }
 
 

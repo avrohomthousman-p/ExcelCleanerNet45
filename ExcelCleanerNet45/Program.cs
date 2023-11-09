@@ -121,6 +121,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\RentRollBalanceHistory.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportOutstandingBalance.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportCashReceiptsSummary.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ChargesCreditsReport.xlsx
 
 
 

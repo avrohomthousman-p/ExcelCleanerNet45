@@ -65,6 +65,7 @@ namespace ExcelCleanerNet45
         {
             iter = new ExcelIterator(worksheet);
 
+
             //for each header in the report that needs a formula 
             foreach (string header in headers)              
             {
@@ -85,6 +86,7 @@ namespace ExcelCleanerNet45
                 {
                     FillInFormulas(worksheet, coordinates.Item1, coordinates.Item2);
                 }
+
             }
 
         }
@@ -106,7 +108,6 @@ namespace ExcelCleanerNet45
             {
                 if (FormulaManager.IsEmptyCell(cell) || !isDataCell(cell))
                 {
-                    //Console.WriteLine($"cell {cell.Address} was skipped");
                     continue;
                 }
 

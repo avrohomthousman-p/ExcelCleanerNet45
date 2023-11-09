@@ -159,8 +159,6 @@ namespace ExcelCleanerNet45
                     continue;
                 }
 
-                Console.WriteLine("merge at " + merged.ToString());
-
                 UnMergeCells(worksheet, merged.ToString());
             }
 

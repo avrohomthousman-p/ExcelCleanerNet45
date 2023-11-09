@@ -185,8 +185,6 @@ namespace ExcelCleanerNet45
                     continue;
                 }
 
-                Console.WriteLine("merge at " + merged.ToString());
-
                 UnMergeCells(worksheet, merged.ToString());
             }
 
@@ -315,7 +313,6 @@ namespace ExcelCleanerNet45
 
                 case MergeType.MAIN_HEADER:
                     currentCells.Style.WrapText = false;
-                    //currentCells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                     ConvertContentsToText(currentCells); //Ensure that dates are displayed correctly
                     Console.WriteLine("major header at " + currentCells.Address);
                     break;

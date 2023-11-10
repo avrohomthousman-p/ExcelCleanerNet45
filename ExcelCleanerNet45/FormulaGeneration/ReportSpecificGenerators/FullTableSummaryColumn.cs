@@ -9,17 +9,31 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
 {
 
     internal delegate bool IsOutsideFormula(ExcelRange cell);
+    internal delegate bool StopGivingFormulas(ExcelRange cell);
 
 
     /// <summary>
     /// Implementation of IFormulaGenerator that gives formulas to a column that is the sum of all data
     /// columns to its left. This is similar to the SummaryColumnGenerator, except that it adds
     /// all columns to the left, instead of just adding specific columns. Also, columns cannot be made negetive.
+    /// 
+    /// The header argument for this formula generator is just the header found at the top of the column that should
+    /// contain all the formulas.
     /// </summary>
     internal class FullTableSummaryColumn : IFormulaGenerator
     {
-        private IsDataCell dataCellDef = new IsDataCell(cell => FormulaManager.IsDollarValue(cell));
-        private IsOutsideFormula outsideFormula = new IsOutsideFormula(cell => !FormulaManager.IsDollarValue(cell));
+        private IsDataCell dataCellDef;
+        private IsOutsideFormula outsideFormula;
+        private StopGivingFormulas columnEnds;
+
+
+
+        public FullTableSummaryColumn()
+        {
+            dataCellDef = new IsDataCell(cell => FormulaManager.IsDollarValue(cell));
+            outsideFormula = new IsOutsideFormula(cell => !FormulaManager.IsDollarValue(cell));
+            columnEnds = new StopGivingFormulas(cell => !dataCellDef(cell));
+        }
 
 
 
@@ -59,10 +73,17 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
         {
             ExcelIterator iter = new ExcelIterator(worksheet, row + 1, col);
 
-            var summaryCells = iter.GetCells(ExcelIterator.SHIFT_DOWN, cell => !dataCellDef(cell));
+            var summaryCells = iter.GetCells(ExcelIterator.SHIFT_DOWN, cell => columnEnds(cell));
 
             foreach (ExcelRange cell in summaryCells)
             {
+                //if this.columnEnds is set to allow empty cells, those empty cells should be skipped
+                if (FormulaManager.IsEmptyCell(cell))
+                {
+                    continue;
+                }
+
+
                 int startColumn = GetFormulaStartColumn(worksheet, cell.Start.Row, col);
                 string formula = BuildFormula(worksheet, cell.Start.Row, startColumn, col - 1);
 
@@ -112,10 +133,24 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
 
 
 
-
+        /// <summary>
+        /// Sets when the formula generator stops moving left to find cells to be included in the formula
+        /// </summary>
+        /// <param name="isOutsideFormula">a function that returns true when the given cell should not be included in the formula</param>
         public void SetOutsideFormulaDefenition(IsOutsideFormula isOutsideFormula)
         {
             this.outsideFormula = isOutsideFormula;
+        }
+
+
+
+        /// <summary>
+        /// Used to modify the way this formula generator determans when to stop putting formulas in a column
+        /// </summary>
+        /// <param name="endFormulaColumn">a function that returns true when a cell shouldnt get a formula</param>
+        public void SetStopGivingFormulas(StopGivingFormulas endFormulaColumn)
+        {
+            this.columnEnds = endFormulaColumn;
         }
 
 

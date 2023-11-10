@@ -303,7 +303,7 @@ namespace ExcelCleanerNet45
 
 
                 case "RentRollActivityCompSummary":
-                case "SubsidyRentRollReport":
+                //case "SubsidyRentRollReport": //it has been decided that this report doeant get any formulas
                     return new SummaryColumnGenerator();
 
 
@@ -339,10 +339,19 @@ namespace ExcelCleanerNet45
 
 
 
+                case "ProfitAndLossStatementByPeriod":
+                    FullTableSummaryColumn summaryCol = new FullTableSummaryColumn();
+                    summaryCol.SetStopGivingFormulas(cell => !FormulaManager.IsEmptyCell(cell) 
+                                                            && !FormulaManager.IsDollarValue(cell));
+
+
+                    return new MultiFormulaGenerator(summaryCol, new FullTableFormulaGenerator());
+
+
+
 
                 case "ReportAccountBalances":
                 case "ReportTenantBal":
-                case "ProfitAndLossStatementByPeriod":
                 case "LedgerReport":
                 case "RentRollActivity_New":
                 case "RentRollActivity":
@@ -415,7 +424,8 @@ namespace ExcelCleanerNet45
 
 
                 case "ProfitAndLossStatementByPeriod":
-                    return new string[] { "Total Income", "Total Expense", "Net Operating Income~-Total Expense,Total Income",
+                    return new string[] { "1Total", "2Total Income", "2Total Expense",
+                        "Net Operating Income~-Total Expense,Total Income",
                         "Net Income~Net Operating Income,-Total Expense" };
 
 
@@ -501,11 +511,12 @@ namespace ExcelCleanerNet45
 
 
 
-
+                /*
+                 //* It has been decided that this report doesnt get any formulas
                 case "SubsidyRentRollReport":
                     return new string[] { 
                         "Current Tenant \\sPortion of the Rent,Current  Subsidy Portion of the Rent=>Current Monthly \\sContract Rent" };
-
+                */
 
 
 

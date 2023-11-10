@@ -123,6 +123,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportCashReceiptsSummary.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ChargesCreditsReport.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementDrillthrough.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementByPeriod.xlsx
 
 
 

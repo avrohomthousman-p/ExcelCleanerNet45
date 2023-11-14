@@ -122,8 +122,8 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportOutstandingBalance.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportCashReceiptsSummary.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ChargesCreditsReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementDrillthrough.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementByPeriod.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementDrillthrough_1.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementByPeriod_2.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossBudget.xlsx
 
 

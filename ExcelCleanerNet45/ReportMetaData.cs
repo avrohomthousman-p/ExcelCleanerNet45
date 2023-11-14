@@ -145,8 +145,6 @@ namespace ExcelCleanerNet45
                 case "PayablesAccountReport":
                 case "ProfitAndLossBudget":
                 case "BalanceSheetPropBreakdown":
-                case "ProfitAndLossStatementDrillthrough":
-                case "ProfitAndLossStatementDrillThrough":
                 case "ProfitAndLossExtendedVariance":
                     return new RowSegmentFormulaGenerator();
 
@@ -354,6 +352,8 @@ namespace ExcelCleanerNet45
 
 
 
+                case "ProfitAndLossStatementDrillthrough":
+                case "ProfitAndLossStatementDrillThrough":
                 case "ReportAccountBalances":
                 case "ReportTenantBal":
                 case "LedgerReport":
@@ -621,8 +621,10 @@ namespace ExcelCleanerNet45
 
                 case "ProfitAndLossStatementDrillthrough":
                 case "ProfitAndLossStatementDrillThrough":
-                    return new string[] { "Expense=Total Expense", "Income=Total Income", 
-                        "Net Operating Income~-Total Expense,Total Income", "Net Income~Net Operating Income,-Total Expense" };
+                    return new string[] { "Total Expense", "Total Income", "Total Non-Operating Income",
+                        "Total Other Cash Adjustments", "Net Operating Income~-Total Expense,Total Income",
+                        "Net Income~Net Operating Income,-Total Expense",
+                        "Adjusted Net Income~Total Other Cash Adjustments,Total Non-Operating Income,Net Operating Income" };
 
 
 

@@ -26,6 +26,12 @@ namespace ExcelCleanerNet45
         protected int firstRowOfTable = -1;
 
 
+        //This stores the start and end columns of the merges that the header of each data column are in.
+        //Any cell inside the table, whose merge spans the same cells as any entry in this Set, is 
+        //considered a data cell.
+        //
+        //Example: if the worksheet has a data column with all it's data cells merged over columns 3-6,
+        //then this hashset will have an entry of (3,6)
         protected HashSet<Tuple<int, int>> mergeRangesOfDataCells;
 
 
@@ -219,30 +225,6 @@ namespace ExcelCleanerNet45
 
                 col += (CountMergeCellLength(currentCell) - 1);
             }
-        }
-
-
-
-        /// <summary>
-        /// Finds the full ExcelRange object that contains the entire merge at the specified address. 
-        /// In other words, the specified row and column point to a cell that is merged to be part of a 
-        /// larger cell. This method returns the ExcelRange for the ENTIRE merge cell.
-        /// </summary>
-        /// <param name="worksheet">the worksheet we are currently cleaning</param>
-        /// <param name="row">the row of a cell that is part of the larger merge</param>
-        /// <param name="col">the column of a cell that is part of the larger merge</param>
-        /// <returns>the Excel range object containing the entire merge, or null if the specifed cell is not a merge</returns>
-        private ExcelRange GetMergeCellByPosition(ExcelWorksheet worksheet, int row, int col)
-        {
-            int index = worksheet.GetMergeCellId(row, col);
-
-            if(index < 1)
-            {
-                return null;
-            }
-
-            string cellAddress = worksheet.MergedCells[index - 1];
-            return worksheet.Cells[cellAddress];
         }
 
 

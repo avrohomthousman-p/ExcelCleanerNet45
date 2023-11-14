@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExcelCleanerNet45.GeneralCleaning
 {
@@ -20,13 +18,19 @@ namespace ExcelCleanerNet45.GeneralCleaning
     /// </summary>
     class ReAlignMergeCells : PrimaryMergeCleaner
     {
+
+        //used to store which column numbers the actual data columns are
+        private HashSet<int> dataCols = null;
+
+
+
         public override void Unmerge(ExcelWorksheet worksheet)
         {
             FindTableBounds(worksheet);
 
-            ReAlignWorksheet(worksheet);
-
             UnMergeMergedSections(worksheet);
+
+            ReAlignWorksheet(worksheet); //this is where this object differs from the parent class
 
             ResizeCells(worksheet);
 
@@ -41,104 +45,236 @@ namespace ExcelCleanerNet45.GeneralCleaning
         /// <summary>
         /// Executes the reAlignment of each data column in the worksheet
         /// </summary>
-        /// <param name="worksheet"></param>
+        /// <param name="worksheet">the worksheet currently being cleaned</param>
         private void ReAlignWorksheet(ExcelWorksheet worksheet)
         {
-            foreach(Tuple<int, int> range in mergeRangesOfDataCells)
-            {
-                Tuple<int, int> desiredColumnSpan = GetProperMergeRange(worksheet, range);
+            dataCols = FindDataColumns(worksheet);
 
-                SetAllMergeSpans(worksheet, range, desiredColumnSpan);
+
+
+
+            //start from the first column with data cells
+            int col = base.mergeRangesOfDataCells.Min(range => range.Item1);
+
+            for(; col <= worksheet.Dimension.End.Column; col++)
+            {
+                ReAlignColumn(worksheet, col);
             }
         }
 
 
 
-        /// <summary>
-        /// Scans all non-empty cells inside the column range and determans the mode average merge column span.
-        /// (which columns the majority of merge cells span)
-        /// </summary>
-        /// <param name="worksheet">the worksheet being cleaned</param>
-        /// <param name="header">the columns that the column header spans</param>
-        /// <returns>A merge range that all cells in the column should span</returns>
-        private Tuple<int, int> GetProperMergeRange(ExcelWorksheet worksheet, Tuple<int, int> header)
+        //for debugging only
+        private string GetRowLetter(int col)
         {
-            //tracks each span of a merge cell to how many times a cell like that was found
-            Dictionary<Tuple<int, int>, int> mergeSpans = new Dictionary<Tuple<int, int>, int>();
+            string alphebet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-            for(int i = base.firstRowOfTable; i <= worksheet.Dimension.End.Row; i++)
+            col--;
+            string result = "" + alphebet[col % 26];
+
+            col /= 26;
+
+            if(col > 0)
             {
+                result = "A" + result;
+            }
 
-                //for each column below our headers
-                for(int j = header.Item1; j <= header.Item2; j++)
+            return result;
+        }
+
+
+
+
+        /// <summary>
+        /// Finds all the data columns in the worksheet
+        /// </summary>
+        /// <param name="worksheet">the worksheet we are currently cleaning</param>
+        /// <returns>a Set with the column numbers for each data column in the worksheet</returns>
+        private HashSet<int> FindDataColumns(ExcelWorksheet worksheet)
+        {
+            int rowsInWorksheet = worksheet.Dimension.End.Row - base.firstRowOfTable;
+            HashSet<int> dataColumns = new HashSet<int>();
+
+
+            for(int col = 1; col <= worksheet.Dimension.End.Column; col++)
+            {
+                int numDataCells = CountDataCellsInColumn(worksheet, col);
+
+                if(HasManyDataCells(numDataCells, rowsInWorksheet))
                 {
-                    ExcelRange cell = GetMergeCellByPosition(worksheet, i, j);
+                    dataColumns.Add(col);
+                }
+            }
 
-                    if(cell == null || IsEmptyCell(cell))
+
+            return dataColumns;
+        }
+
+
+
+        /// <summary>
+        /// Counts the number of non empty cells in the table (no major headers) that are inside the specified column
+        /// </summary>
+        /// <param name="worksheet">the worksheet currently being cleaned</param>
+        /// <param name="column">the column to be counted</param>
+        /// <returns>the number of non empty cells in the column</returns>
+        private int CountDataCellsInColumn(ExcelWorksheet worksheet, int column)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet, base.firstRowOfTable, column);
+
+            return iter.GetCells(ExcelIterator.SHIFT_DOWN).Count(cell => !IsEmptyCell(cell));
+        }
+
+
+
+        /// <summary>
+        /// Checks if the column has a large number of data cells relative to the number of rows it has
+        /// </summary>
+        /// <param name="numCells">the number of data cells found in the column</param>
+        /// <param name="rowsInWorksheet">the total number of cells found in the column</param>
+        /// <returns>true if the column has a large number of data cells and false otherwise</returns>
+        private bool HasManyDataCells(int numCells, int rowsInWorksheet)
+        {
+            return numCells >= (int)(.50 * rowsInWorksheet);
+        }
+
+
+
+        /// <summary>
+        /// Moves all data found inside the specified column into the nearest data column. If the specified
+        /// column is already a data column, this function will do nothing.
+        /// </summary>
+        /// <param name="worksheet">the worksheet currently being cleaned</param>
+        /// <param name="column">the column we are cleaning</param>
+        private void ReAlignColumn(ExcelWorksheet worksheet, int column)
+        {
+            if (dataCols.Contains(column)) //if this column is already a data column, we want to keep the data in it
+            {
+                return;
+            }
+
+            
+            //Get the nearest and second to nearest data columns
+            var nearestDataCol = GetNextNearestDataColumn(worksheet, column);
+
+            int nearest = nearestDataCol.First();
+            int secondNearest = nearestDataCol.Skip(1).First();
+
+
+
+            ExcelRange sourceCell;
+            ExcelRange destCell;
+            for(int row = base.firstRowOfTable; row <= worksheet.Dimension.End.Row; row++)
+            {
+                sourceCell = worksheet.Cells[row, column];
+
+                if (!IsEmptyCell(sourceCell))
+                {
+
+
+                    destCell = GetDestinationCell(worksheet, row, nearest, secondNearest);
+                    if(destCell != null)
                     {
-                        continue;
+                        MoveCellToDataColumn(sourceCell, destCell);
                     }
                     else
                     {
-                        Tuple<int, int> span = new Tuple<int, int>(cell.Start.Column, cell.End.Column);
-
-                        //update dictionary
-                        if (!mergeSpans.ContainsKey(span))
-                        {
-                            mergeSpans.Add(span, 0);
-                        }
-                        mergeSpans[span]++;
-
-
-                        j = cell.End.Column;
+                        Console.WriteLine($"Cell {sourceCell.Address} cannot be moved as the destination cell isnt empty");
                     }
+
+                    
                 }
             }
-
-
-
-            return GetKeyWithLargestValue(mergeSpans);
         }
 
 
 
 
         /// <summary>
-        /// Searches the specified dictionary and finds and returns the key that has the largest value 
-        /// associated with it.
+        /// Finds the next data column that is closest to the specified column
         /// </summary>
-        /// <param name="dictionary">the dictionary to be searched</param>
-        /// <returns>the key with the largest associated value</returns>
-        private Tuple<int, int> GetKeyWithLargestValue(Dictionary<Tuple<int, int>, int> dictionary)
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="originalCol">the origin column that needs its nearest data column</param>
+        /// <returns>the next closest column to the origin</returns>
+        private IEnumerable<int> GetNextNearestDataColumn(ExcelWorksheet worksheet, int originalCol)
         {
-            Tuple<int, int> key = null;
-            int largestValue = Int32.MinValue;
-            
-            foreach(KeyValuePair<Tuple<int, int>, int> kvp in dictionary)
+            int leftSide = originalCol;
+            int rightSide = originalCol;
+
+            while (rightSide <= worksheet.Dimension.End.Column || leftSide >= 1)
             {
-                if(kvp.Value >= largestValue)
+
+                if(dataCols.Contains(rightSide))
                 {
-                    largestValue = kvp.Value;
-                    key = kvp.Key;
+                    yield return rightSide;
                 }
+                else if(dataCols.Contains(leftSide))
+                {
+                    yield return leftSide;
+                }
+
+
+                rightSide++;
+                leftSide--;
             }
-
-
-            return key;
         }
 
 
 
+
         /// <summary>
-        /// Sets all the merge cells in the original column span, to only cover the desired column span
+        /// Gets the destination cell that a data cell should be moved to.
         /// </summary>
         /// <param name="worksheet">the worksheet currently being cleaned</param>
-        /// <param name="originalSpan">the span of the header of the data column</param>
-        /// <param name="desiredSpan">the columns every data cell in the column SHOULD span</param>
-        private void SetAllMergeSpans(ExcelWorksheet worksheet, Tuple<int, int> originalSpan, Tuple<int, int> desiredSpan)
+        /// <param name="row">the row the source cell is in</param>
+        /// <param name="dataCol">the data column we want to move the cell to</param>
+        /// <param name="backupDataCol">the backup column we should move the cell to if the other data column isnt availible</param>
+        /// <returns>the cell the data should be moved to, or null if that cell isnt availible</returns>
+        private ExcelRange GetDestinationCell(ExcelWorksheet worksheet, int row, int dataCol, int backupDataCol)
         {
-            //TODO: iterate through the column and ensure all merge cellsmatch the desired span
+            ExcelRange destCell = worksheet.Cells[row, dataCol];
+
+            if (IsEmptyCell(destCell))
+            {
+                return destCell;
+            }
+            else
+            {
+                destCell = worksheet.Cells[row, backupDataCol];
+
+                if (IsEmptyCell(destCell))
+                {
+                    return destCell;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
+
+
+
+        /// <summary>
+        /// Moves the contents of the source cell to the data cell (if its empty) and ensures all styles are maintained
+        /// </summary>
+        /// <param name="source">the cell whose contents are to be moved</param>
+        /// <param name="dest">the cell the data should be placed in</param>
+        private void MoveCellToDataColumn(ExcelRange source, ExcelRange dest)
+        {
+            if (!IsEmptyCell(dest))
+            {
+                Console.WriteLine($"Data was supposed to be copied from {source.Address} to {dest.Address} but the cell was not empty");
+                return;
+            }
+
+
+            dest.Value = source.Value;
+
+            source.Value = null;
+
+            base.CopyCellStyles(source, dest);
+        }
     }
 }

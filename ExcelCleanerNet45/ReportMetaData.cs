@@ -83,6 +83,10 @@ namespace ExcelCleanerNet45
 
 
 
+                case "ProfitAndLossBudget":
+                    return new ReAlignMergeCells();
+
+
                 default:
                     return new PrimaryMergeCleaner();
             }
@@ -104,7 +108,7 @@ namespace ExcelCleanerNet45
             {
                 //TODO: add the other reports with this issue
                 case "ReportOutstandingBalance":
-                case "ProfitAndLossBudget":
+                //case "ProfitAndLossBudget":
                     return true;
 
 

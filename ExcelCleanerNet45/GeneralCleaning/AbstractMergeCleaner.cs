@@ -311,6 +311,30 @@ namespace ExcelCleanerNet45
 
             return true;
         }
+
+
+
+        /// <summary>
+        /// Finds the full ExcelRange object that contains the entire merge at the specified address. 
+        /// In other words, the specified row and column point to a cell that is merged to be part of a 
+        /// larger cell. This method returns the ExcelRange for the ENTIRE merge cell.
+        /// </summary>
+        /// <param name="worksheet">the worksheet we are currently cleaning</param>
+        /// <param name="row">the row of a cell that is part of the larger merge</param>
+        /// <param name="col">the column of a cell that is part of the larger merge</param>
+        /// <returns>the Excel range object containing the entire merge, or null if the specifed cell is not a merge</returns>
+        public static ExcelRange GetMergeCellByPosition(ExcelWorksheet worksheet, int row, int col)
+        {
+            int index = worksheet.GetMergeCellId(row, col);
+
+            if (index < 1)
+            {
+                return null;
+            }
+
+            string cellAddress = worksheet.MergedCells[index - 1];
+            return worksheet.Cells[cellAddress];
+        }
     }
 }
 

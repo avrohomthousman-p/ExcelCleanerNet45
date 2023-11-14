@@ -185,6 +185,8 @@ namespace ExcelCleanerNet45
             destination.Style.Font.Name = source.Style.Font.Name;
             destination.Style.Font.Scheme = source.Style.Font.Scheme;
             destination.Style.Font.Charset = source.Style.Font.Charset;
+
+            destination.Style.WrapText = source.Style.WrapText;
         }
 
 

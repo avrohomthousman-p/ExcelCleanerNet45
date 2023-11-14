@@ -18,8 +18,14 @@ namespace ExcelCleanerNet45.GeneralCleaning
     class ReAlignMergeCells : PrimaryMergeCleaner
     {
 
+        private readonly double DEFAULT_COLUMN_WIDTH = 11;
+
+
         //used to store which column numbers the actual data columns are
         private HashSet<int> dataCols = null;
+
+
+        private int firstDataColumn;
 
 
 
@@ -31,7 +37,7 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
             ReAlignWorksheet(worksheet); //this is where this object differs from the parent class
 
-            ResizeCells(worksheet);
+            ResizeCells(worksheet); //the class also differers here by overriding this function
 
             DeleteColumns(worksheet);
 
@@ -47,13 +53,16 @@ namespace ExcelCleanerNet45.GeneralCleaning
         /// <param name="worksheet">the worksheet currently being cleaned</param>
         private void ReAlignWorksheet(ExcelWorksheet worksheet)
         {
+
+            firstDataColumn = base.mergeRangesOfDataCells.Min(range => range.Item1);
+
             dataCols = FindDataColumns(worksheet);
 
 
 
 
             //start from the first column with data cells
-            int col = base.mergeRangesOfDataCells.Min(range => range.Item1);
+            int col = firstDataColumn;
 
             for(; col <= worksheet.Dimension.End.Column; col++)
             {
@@ -95,7 +104,7 @@ namespace ExcelCleanerNet45.GeneralCleaning
             HashSet<int> dataColumns = new HashSet<int>();
 
 
-            for(int col = 1; col <= worksheet.Dimension.End.Column; col++)
+            for(int col = firstDataColumn; col <= worksheet.Dimension.End.Column; col++)
             {
                 int numDataCells = CountDataCellsInColumn(worksheet, col);
 
@@ -174,7 +183,7 @@ namespace ExcelCleanerNet45.GeneralCleaning
                     destCell = GetDestinationCell(worksheet, row, nearest, secondNearest);
                     if(destCell != null)
                     {
-                        MoveCellToDataColumn(sourceCell, destCell);
+                        MoveCellToDataColumn(worksheet, sourceCell, destCell);
                     }
                     else
                     {
@@ -258,9 +267,10 @@ namespace ExcelCleanerNet45.GeneralCleaning
         /// <summary>
         /// Moves the contents of the source cell to the data cell (if its empty) and ensures all styles are maintained
         /// </summary>
+        /// <param name="worksheet">The worksheet currently being cleaned</param>
         /// <param name="source">the cell whose contents are to be moved</param>
         /// <param name="dest">the cell the data should be placed in</param>
-        private void MoveCellToDataColumn(ExcelRange source, ExcelRange dest)
+        private void MoveCellToDataColumn(ExcelWorksheet worksheet, ExcelRange source, ExcelRange dest)
         {
             if (!IsEmptyCell(dest))
             {
@@ -269,11 +279,36 @@ namespace ExcelCleanerNet45.GeneralCleaning
             }
 
 
+            double rowHeight = worksheet.Row(source.Start.Row).Height;
+
+
             dest.Value = source.Value;
 
             source.Value = null;
 
             base.CopyCellStyles(source, dest);
+
+
+            //ensure the height doesnt get changed
+            worksheet.Row(source.Start.Row).Height = rowHeight;
+        }
+
+
+
+        /// <inheritdoc/>
+        protected override void ResizeCells(ExcelWorksheet worksheet)
+        {
+            base.ResizeCells(worksheet);
+
+            foreach (int columnNum in dataCols)
+            {
+                var column = worksheet.Column(columnNum);
+
+                if(column.Width < DEFAULT_COLUMN_WIDTH)
+                {
+                    column.Width = DEFAULT_COLUMN_WIDTH;
+                }
+            }
         }
     }
 }

@@ -125,6 +125,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementDrillthrough_1.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementByPeriod_2.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossBudget.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossComp.xlsx
 
 
 

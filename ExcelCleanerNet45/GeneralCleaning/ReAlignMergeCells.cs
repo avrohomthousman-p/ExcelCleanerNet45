@@ -7,14 +7,13 @@ namespace ExcelCleanerNet45.GeneralCleaning
 {
 
     /// <summary>
-    /// An extentsion of the primary merge cleaner ensures that all data cells (and the header) in a given column all
-    /// have a merge that spans the same range.
+    /// An extentsion of the primary merge cleaner that ensures that all data cells (including the header) in a given 
+    /// data column all end up in the same column after the unmerge.
     /// 
     /// Some reports (like ProfitAndLossBudget) have most of their data cells of a column merged over the same area, but
     /// then some cells (usually the column header) merged over a different area. This causes the column to not be aligned
-    /// correctly after running the primary merge cleaner. The purpose of this class is to correct that issue before 
-    /// the primary merge cleaner begins. After this class does its cleanup, the primary merge cleaner should be able
-    /// to do its work as though this were a regular report.
+    /// correctly after running the primary merge cleaner. The purpose of this class is to correct that issue after the
+    /// unmerge, by moving cells into the data column that is nearest to their current location.
     /// </summary>
     class ReAlignMergeCells : PrimaryMergeCleaner
     {

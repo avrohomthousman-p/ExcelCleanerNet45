@@ -238,6 +238,7 @@ namespace ExcelCleanerNet45
 
 
 
+
         /// <summary>
         /// Gets the type of merge that is found in the specified cell
         /// </summary>

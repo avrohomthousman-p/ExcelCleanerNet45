@@ -37,6 +37,7 @@ namespace ExcelCleanerNet45
         {
             switch (reportType)
             {
+                case "SummaryReport":
                 case "TrialBalance":
                 case "TrialBalanceVariance":
                 case "BalanceSheetDrillthrough":

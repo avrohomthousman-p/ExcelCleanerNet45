@@ -9,7 +9,11 @@ namespace ExcelCleanerNet45.FormulaGeneration
 {
 
     /// <summary>
-    /// An override of the FullTableFormulaGenerator that adds up all the bold cells only.
+    /// An override of the FullTableFormulaGenerator that adds up all the bold cells only. This is 
+    /// usefull for any report that needs to add up only all the bold cells in the range (like TrialBalance).
+    /// 
+    /// Note: if the report is very very long, the formula might fail becuase it went over the maximum number
+    /// of characters allowed in an excel formula.
     /// </summary>
     internal class SumOnlyBolds : FullTableFormulaGenerator
     {

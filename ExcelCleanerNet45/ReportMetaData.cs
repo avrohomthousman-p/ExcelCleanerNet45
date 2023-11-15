@@ -458,8 +458,8 @@ namespace ExcelCleanerNet45
 
 
                 case "BalanceSheetDrillthrough":
-                    return new string[] { "Current Assets=Total Current Assets", "Fixed Asset=Total Fixed Asset", 
-                        "Other Asset=Total Other Asset", "Current Liabilities=Total Current Liabilities",
+                    return new string[] { "Asset=Total Asset", "Current Assets=Total Current Assets",
+                        "Fixed Asset=Total Fixed Asset", "Other Asset=Total Other Asset", "Current Liabilities=Total Current Liabilities",
                         "Liability=Total Liability", "Long Term Liability=Total Long Term Liability", 
                         "Equity=Total Equity", "Total Liabilities~Total Long Term Liability,Total Liability,Total Current Liabilities",
                         "Total Assets~Total Other Asset,Total Fixed Asset,Total Current Assets", 

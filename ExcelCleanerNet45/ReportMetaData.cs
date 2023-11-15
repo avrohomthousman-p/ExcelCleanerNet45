@@ -330,8 +330,14 @@ namespace ExcelCleanerNet45
                 case "ReportPayablesRegister":
                 case "AgedPayables":
                 case "AgedReceivables":
-                case "TrialBalance":
                     formulaGenerator = new FullTableFormulaGenerator();
+                    formulaGenerator.SetDefenitionForBeyondFormulaRange(formulaGenerator.IsNonDataCell);
+                    return formulaGenerator;
+
+
+
+                case "TrialBalance":
+                    formulaGenerator = new SumOnlyBolds();
                     formulaGenerator.SetDefenitionForBeyondFormulaRange(formulaGenerator.IsNonDataCell);
                     return formulaGenerator;
 

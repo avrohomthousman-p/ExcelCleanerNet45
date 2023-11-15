@@ -73,6 +73,7 @@
     <Compile Include="FormulaGeneration\RowSegmentFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\SummaryColumnGenerator.cs" />
     <Compile Include="FormulaGeneration\SummaryRowFormulaGenerator.cs" />
+    <Compile Include="FormulaGeneration\SumOnlyBolds.cs" />
     <Compile Include="FormulaGeneration\SumOtherSums.cs" />
     <Compile Include="GeneralCleaning\AbstractMergeCleaner.cs" />
     <Compile Include="GeneralCleaning\BackupMergeCleaner.cs" />

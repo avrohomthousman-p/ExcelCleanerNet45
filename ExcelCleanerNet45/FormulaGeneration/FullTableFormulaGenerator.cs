@@ -18,7 +18,7 @@ namespace ExcelCleanerNet45
     internal class FullTableFormulaGenerator : IFormulaGenerator
     {
 
-        private ExcelIterator iter;
+        protected ExcelIterator iter;
         protected IsBeyondFormulaRange beyondFormulaRange;
         protected IsDataCell isDataCell;
 

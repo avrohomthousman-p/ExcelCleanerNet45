@@ -39,8 +39,6 @@ namespace ExcelCleanerNet45
             {
                 case "TrialBalance":
                 case "TrialBalanceVariance":
-                case "ProfitAndLossStatementDrillthrough":
-                case "ProfitAndLossStatementDrillThrough":
                 case "BalanceSheetDrillthrough":
                 case "CashFlow":
                 case "InvoiceDetail":
@@ -48,6 +46,21 @@ namespace ExcelCleanerNet45
                 case "UnitInfoReport":
                 case "ReportCashReceiptsSummary":
                     return new BackupMergeCleaner();
+
+
+
+                case "ProfitAndLossStatementDrillthrough":
+                case "ProfitAndLossStatementDrillThrough":
+                    AbstractMergeCleaner m = new BackupMergeCleaner();
+                    m.MoveMajorHeaders = false;
+                    return m;
+
+
+
+                case "ProfitAndLossStatementByJob":
+                    m = new PrimaryMergeCleaner();
+                    m.MoveMajorHeaders = false;
+                    return m;
 
 
 
@@ -139,6 +152,8 @@ namespace ExcelCleanerNet45
 
             switch (reportName)
             {
+                case "ProfitAndLossStatementDrillthrough":
+                case "ProfitAndLossStatementDrillThrough":
                 case "BalanceSheetDrillthrough":
                 case "BalanceSheetComp":
                 case "ProfitAndLossComp":
@@ -352,8 +367,7 @@ namespace ExcelCleanerNet45
 
 
 
-                case "ProfitAndLossStatementDrillthrough":
-                case "ProfitAndLossStatementDrillThrough":
+                
                 case "ReportAccountBalances":
                 case "ReportTenantBal":
                 case "LedgerReport":
@@ -625,8 +639,10 @@ namespace ExcelCleanerNet45
 
                 case "ProfitAndLossStatementDrillthrough":
                 case "ProfitAndLossStatementDrillThrough":
-                    return new string[] { "Total Expense", "Total Income", "Total Non-Operating Income",
-                        "Total Other Cash Adjustments", "Net Operating Income~-Total Expense,Total Income",
+                    return new string[] { "Expense=Total Expense", "Income=Total Income",
+                        "Non-Operating Income=Total Non-Operating Income",
+                        "Other Cash Adjustments=Total Other Cash Adjustments",
+                        "Net Operating Income~-Total Expense,Total Income",
                         "Net Income~Net Operating Income,-Total Expense",
                         "Adjusted Net Income~Total Other Cash Adjustments,Total Non-Operating Income,Net Operating Income" };
 

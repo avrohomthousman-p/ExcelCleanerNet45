@@ -11,6 +11,21 @@ namespace ExcelCleanerNet45
     /// </summary>
     internal abstract class AbstractMergeCleaner : IMergeCleaner
     {
+
+        protected bool moveMajorHeaders = true;
+
+        /// <summary>
+        /// If set to true, this object will move all major headers near the left side of the worksheet into column 1
+        /// </summary>
+        public bool MoveMajorHeaders
+        {
+            get { return moveMajorHeaders; }
+            set { moveMajorHeaders = value; }
+        }
+
+
+
+
         public virtual void Unmerge(ExcelWorksheet worksheet)
         {
             FindTableBounds(worksheet);
@@ -272,6 +287,12 @@ namespace ExcelCleanerNet45
         /// <param name="firstDataRow">the row that marks the beginning of the data section. All cells above it are major headers</param>
         protected virtual void MoveMajorHeadersLeft(ExcelWorksheet worksheet, int firstDataRow)
         {
+            if (!moveMajorHeaders)
+            {
+                return;
+            }
+
+
             int lastColumnBeingMoved = Math.Min(3, worksheet.Dimension.End.Column);
 
             for (int col = 2; col <= lastColumnBeingMoved; col++)

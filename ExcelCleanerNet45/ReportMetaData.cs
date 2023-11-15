@@ -722,7 +722,7 @@ namespace ExcelCleanerNet45
 
 
                 case "LedgerReport":
-                    return new string[] { "Total \\d+ - Prepaid Contracts" };
+                    return new string[] { "Total \\d+ - Prepaid Contracts", $"Total Operating - {anyProperty}" };
 
 
                 case "RentRollActivityTotals":

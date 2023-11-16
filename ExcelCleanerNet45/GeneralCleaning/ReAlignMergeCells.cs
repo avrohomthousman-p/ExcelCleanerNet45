@@ -7,19 +7,19 @@ namespace ExcelCleanerNet45.GeneralCleaning
 {
 
     /// <summary>
-    /// An extentsion of the primary merge cleaner that ensures that all data cells (including the header) in a given 
+    /// An extension of the primary merge cleaner that ensures that all data cells (including the header) in a given 
     /// data column all end up in the same column after the unmerge.
     /// 
     /// Some reports (like ProfitAndLossBudget) have most of their data cells of a column merged over the same area, but
     /// then some cells (usually the column header) merged over a different area. This causes the column to not be aligned
     /// correctly after running the primary merge cleaner. The purpose of this class is to correct that issue after the
     /// unmerge, by moving cells into the data column that is nearest to their current location.
+    /// 
+    /// Note: this class does not inherit from PrimaryMergeCleaner directly. It inherits frim SetDefaultColumnWidth
+    /// which inherits from PrimaryMergeCleaner, and also ensures that all data columns have a minimum width.
     /// </summary>
-    class ReAlignMergeCells : PrimaryMergeCleaner
+    class ReAlignMergeCells : SetDefaultColumnWidth
     {
-
-        private readonly double DEFAULT_COLUMN_WIDTH = 11;
-
 
         //used to store which column numbers the actual data columns are
         private HashSet<int> dataCols = null;
@@ -29,6 +29,7 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
 
 
+        /// <inheritdoc/>
         public override void Unmerge(ExcelWorksheet worksheet)
         {
             FindTableBounds(worksheet);
@@ -37,7 +38,7 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
             ReAlignWorksheet(worksheet); //this is where this object differs from the parent class
 
-            ResizeCells(worksheet); //the class also differers here by overriding this function
+            ResizeCells(worksheet);
 
             DeleteColumns(worksheet);
 
@@ -293,22 +294,5 @@ namespace ExcelCleanerNet45.GeneralCleaning
             worksheet.Row(source.Start.Row).Height = rowHeight;
         }
 
-
-
-        /// <inheritdoc/>
-        protected override void ResizeCells(ExcelWorksheet worksheet)
-        {
-            base.ResizeCells(worksheet);
-
-            foreach (int columnNum in dataCols)
-            {
-                var column = worksheet.Column(columnNum);
-
-                if(column.Width < DEFAULT_COLUMN_WIDTH)
-                {
-                    column.Width = DEFAULT_COLUMN_WIDTH;
-                }
-            }
-        }
     }
 }

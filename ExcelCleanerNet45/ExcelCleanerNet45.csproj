@@ -84,6 +84,7 @@
     <Compile Include="GeneralCleaning\PrimaryMergeCleaner.cs" />
     <Compile Include="GeneralCleaning\ReAlignDataCells.cs" />
     <Compile Include="GeneralCleaning\ReAlignMergeCells.cs" />
+    <Compile Include="GeneralCleaning\SetDefaultColumnWidth.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportMetaData.cs" />

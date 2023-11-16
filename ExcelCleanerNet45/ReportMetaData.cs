@@ -101,6 +101,10 @@ namespace ExcelCleanerNet45
                     return new ReAlignMergeCells();
 
 
+                case "BankReconcilliation":
+                    return new SetDefaultColumnWidth();
+
+
                 default:
                     return new PrimaryMergeCleaner();
             }

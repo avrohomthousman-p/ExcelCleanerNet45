@@ -19,11 +19,37 @@ namespace ExcelCleanerNet45
         [STAThread]
         static void Main(string[] args)
         {
+
+            bool runMany = false;//true;
             string filepath = "";
 
             if (args != null && args.Count() > 0)
             {
                 filepath = args[0];
+            }
+            else if (runMany)
+            {
+                DirectoryInfo d = new DirectoryInfo(@"C:\Users\avroh\Downloads\ExcelProject\full-test");
+                foreach(FileInfo file in d.EnumerateFiles())
+                {
+                    string re = file.Name.Substring(0, file.Name.Length - 5);
+
+                    if (re.EndsWith("_fixed"))
+                    {
+                        continue;
+                    }
+
+                    Console.WriteLine("report = " + file.Name);
+
+                    //Tell the file cleaner to do the cleaning
+                    byte[] outt = FileCleaner.OpenXLSX(ConvertFileToBytes(file.FullName), re, true);
+
+
+                    //save the output
+                    SaveByteArrayAsFile(outt, file.FullName.Replace(".xlsx", "_fixed.xlsx"));
+                    
+                }
+                return;
             }
 
             else
@@ -137,6 +163,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\VendorPropertyReport.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\missing-reports\ReportAccountBalances_8222023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\BankReconcilliation.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\full-test\PayablesAccountReport.xlsx
 
 
 

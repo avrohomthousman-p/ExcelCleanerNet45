@@ -662,7 +662,9 @@ namespace ExcelCleanerNet45
 
                 case "PayablesAccountReport":
                     return new string[] { "Pool Furniture=Total Pool Furniture", "Hallways=Total Hallways", 
-                        "Garage=Total Garage", "Elevators=Total Elevators", "Clubhouse=Total Clubhouse", 
+                        "Garage=Total Garage", "Elevators=Total Elevators", "Clubhouse=Total Clubhouse",
+                        "Painting=Total Painting", "HVAC=Total HVAC", "Windows=Total Windows", "Appliances=Total Appliances",
+                        "Paint/Contracting Labor=Total Paint/Contracting Labor",
                         "Total Common Area CapEx~Total Pool Furniture,Total Hallways,Total Garage,Total Elevators,Total Clubhouse", "Total~Total Common Area CapEx", 
                         "Total:~Total Common Area CapEx" };
 

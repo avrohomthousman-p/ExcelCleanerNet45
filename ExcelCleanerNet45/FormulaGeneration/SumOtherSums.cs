@@ -74,7 +74,7 @@ namespace ExcelCleanerNet45.FormulaGeneration
 
             //Formula to add up all cells that don't contain a formula
             //The _xlfn fixes a bug in excel
-            return "SUM(IF(_xlfn.ISFORMULA(" + range.Address + "), 0, " + range.Address + "))";
+            return $"SUM(IF(_xlfn.ISFORMULA({range.Address}), 0, {range.Address}))";
         }
 
 

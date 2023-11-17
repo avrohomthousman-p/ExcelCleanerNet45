@@ -22,7 +22,7 @@ namespace ExcelCleanerNet45
     internal class RowSegmentFormulaGenerator : IFormulaGenerator
     {
 
-        private IsDataCell isDataCell = new IsDataCell(FormulaManager.IsDollarValue);
+        protected IsDataCell isDataCell = new IsDataCell(FormulaManager.IsDollarValue);
 
 
         private bool trimRange = true;
@@ -88,7 +88,7 @@ namespace ExcelCleanerNet45
         /// <param name="startHeader">the text to look for to signal the start row</param>
         /// <param name="endHeader">The text to look for to signal the end row</param>
         /// <returns>a tuple containing the start-row, end-row, and column of the formula range</returns>
-        private static IEnumerable<Tuple<int, int, int>> GetRowRangeForFormula(ExcelWorksheet worksheet, string startHeader, string endHeader)
+        protected static IEnumerable<Tuple<int, int, int>> GetRowRangeForFormula(ExcelWorksheet worksheet, string startHeader, string endHeader)
         {
             ExcelIterator iter = new ExcelIterator(worksheet);
 
@@ -128,7 +128,7 @@ namespace ExcelCleanerNet45
         /// <param name="col">the column number of the starting cell in the formula range</param>
         /// <param name="targetText">the text to look for that signals the end cell of the formula range</param>
         /// <returns>the row number of the last cell in the formula range</returns>
-        private static int FindEndOfFormulaRange(ExcelWorksheet worksheet, int row, int col, string targetText)
+        protected static int FindEndOfFormulaRange(ExcelWorksheet worksheet, int row, int col, string targetText)
         {
             ExcelIterator iter = new ExcelIterator(worksheet, row + 1, col);
 
@@ -149,7 +149,7 @@ namespace ExcelCleanerNet45
         /// <param name="startRow">the first row of the formula range (containing the header)</param>
         /// <param name="endRow">the last row of the formula range (containing the total)</param>
         /// <param name="col">the column of the header and total for the formula range</param>
-        private void FillInFormulas(ExcelWorksheet worksheet, int startRow, int endRow, int col)
+        protected virtual void FillInFormulas(ExcelWorksheet worksheet, int startRow, int endRow, int col)
         {
 
             ExcelRange cell;
@@ -191,7 +191,7 @@ namespace ExcelCleanerNet45
         /// <param name="endRow">te row where the end header was found</param>
         /// <param name="col">the column of the formula range</param>
         /// <returns>the number of empty cells at the start of the formula range</returns>
-        private static int CountEmptyCellsOnTop(ExcelWorksheet worksheet, int startRow, int endRow, int col)
+        protected static int CountEmptyCellsOnTop(ExcelWorksheet worksheet, int startRow, int endRow, int col)
         {
             int emptyCells = 0;
             ExcelRange cell;

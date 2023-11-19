@@ -20,38 +20,12 @@ namespace ExcelCleanerNet45
         static void Main(string[] args)
         {
 
-            bool runMany = false;//true;
             string filepath = "";
 
             if (args != null && args.Count() > 0)
             {
                 filepath = args[0];
             }
-            else if (runMany)
-            {
-                DirectoryInfo d = new DirectoryInfo(@"C:\Users\avroh\Downloads\ExcelProject\full-test");
-                foreach(FileInfo file in d.EnumerateFiles())
-                {
-                    string re = file.Name.Substring(0, file.Name.Length - 5);
-
-                    if (re.EndsWith("_fixed"))
-                    {
-                        continue;
-                    }
-
-                    Console.WriteLine("report = " + file.Name);
-
-                    //Tell the file cleaner to do the cleaning
-                    byte[] outt = FileCleaner.OpenXLSX(ConvertFileToBytes(file.FullName), re, true);
-
-
-                    //save the output
-                    SaveByteArrayAsFile(outt, file.FullName.Replace(".xlsx", "_fixed.xlsx"));
-                    
-                }
-                return;
-            }
-
             else
             {
                 // C:\Users\avroh\Downloads\ReportPayablesRegister.xlsx
@@ -168,7 +142,7 @@ namespace ExcelCleanerNet45
 
 
 
-                Console.WriteLine("Please enter the filepath of the Excel report you want to clean:");
+                Console.WriteLine("Please enter the filepath (or directory) of the Excel report you want to clean:");
                 filepath = Console.ReadLine();
 
                 /*
@@ -182,14 +156,26 @@ namespace ExcelCleanerNet45
             }
 
 
-            string reportName = GetReportName(filepath);
 
-            //Tell the file cleaner to do the cleaning
-            byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(filepath), reportName, true);
+            //Are we doing a single file or an entire directory
+            if (filepath.Contains("."))
+            {
+                RunAllReportsInDirectory(filepath);
+            }
+            else
+            {
+                string reportName = GetReportName(filepath);
+
+                //Tell the file cleaner to do the cleaning
+                byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(filepath), reportName, true);
 
 
-            //save the output
-            SaveByteArrayAsFile(output, filepath.Replace(".xlsx", "_fixed.xlsx"));
+                //save the output
+                SaveByteArrayAsFile(output, filepath.Replace(".xlsx", "_fixed.xlsx"));
+            }
+
+
+            
             Console.WriteLine("Press Enter to exit");
             Console.Read();
 
@@ -226,6 +212,42 @@ namespace ExcelCleanerNet45
 
 
             return filename.Substring(start, length);
+        }
+
+
+
+        /// <summary>
+        /// Cleans all reports in the specified directory
+        /// </summary>
+        /// <param name="directory">the full path of the directory containing the reports</param>
+        private static void RunAllReportsInDirectory(string directory)
+        {
+            DirectoryInfo d = new DirectoryInfo(directory);
+            foreach (FileInfo file in d.EnumerateFiles())
+            {
+                if(!file.Name.EndsWith(".xlsx") && !file.Name.EndsWith(".xls"))
+                {
+                    continue;
+                }
+
+
+                string reportName = file.Name.Substring(0, file.Name.Length - 5);
+
+                if (reportName.EndsWith("_fixed"))
+                {
+                    continue;
+                }
+
+                Console.WriteLine("cleaning report " + file.Name);
+
+                //Tell the file cleaner to do the cleaning
+                byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(file.FullName), reportName, true);
+
+
+                //save the output
+                SaveByteArrayAsFile(output, file.FullName.Replace(".xlsx", "_fixed.xlsx"));
+
+            }
         }
 
 

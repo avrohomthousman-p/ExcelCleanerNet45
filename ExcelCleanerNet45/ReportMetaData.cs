@@ -162,7 +162,6 @@ namespace ExcelCleanerNet45
                 case "BalanceSheetDrillthrough":
                 case "BalanceSheetComp":
                 case "ProfitAndLossComp":
-                case "PayablesAccountReport":
                 case "ProfitAndLossBudget":
                 case "BalanceSheetPropBreakdown":
                 case "ProfitAndLossExtendedVariance":
@@ -176,6 +175,11 @@ namespace ExcelCleanerNet45
                     gen.trimFormulaRange = false;
                     return gen;
 
+
+
+
+                case "PayablesAccountReport":
+                    return new MultiFormulaGenerator(new RowSegmentFormulaGenerator(), new SumWithinSegmentGenerator());
 
 
 
@@ -661,12 +665,14 @@ namespace ExcelCleanerNet45
 
 
                 case "PayablesAccountReport":
-                    return new string[] { "Pool Furniture=Total Pool Furniture", "Hallways=Total Hallways", 
-                        "Garage=Total Garage", "Elevators=Total Elevators", "Clubhouse=Total Clubhouse",
-                        "Painting=Total Painting", "HVAC=Total HVAC", "Windows=Total Windows", "Appliances=Total Appliances",
-                        "Paint/Contracting Labor=Total Paint/Contracting Labor",
-                        "Total Common Area CapEx~Total Pool Furniture,Total Hallways,Total Garage,Total Elevators,Total Clubhouse", "Total~Total Common Area CapEx", 
-                        "Total:~Total Common Area CapEx" };
+                    return new string[] { "1Pool Furniture=Total Pool Furniture", "1Hallways=Total Hallways", 
+                        "1Garage=Total Garage", "1Elevators=Total Elevators", "1Clubhouse=Total Clubhouse",
+                        "1Painting=Total Painting", "1HVAC=Total HVAC", "1Windows=Total Windows", "1Appliances=Total Appliances",
+                        "1Paint/Contracting Labor=Total Paint/Contracting Labor",
+                        "2Common Area CapEx=Total Common Area CapEx", "2CapEx=Total CapEx",
+                        "2Apartment Renovation=Total Apartment Renovation",
+                        "Total~Total Common Area CapEx,Total CapEx,Total Apartment Renovation",
+                        "Total:~Total Common Area CapEx,Total CapEx,Total Apartment Renovation" };
 
 
 

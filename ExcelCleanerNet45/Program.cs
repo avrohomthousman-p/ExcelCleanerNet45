@@ -158,7 +158,7 @@ namespace ExcelCleanerNet45
 
 
             //Are we doing a single file or an entire directory
-            if (filepath.Contains("."))
+            if (!filepath.Contains("."))
             {
                 RunAllReportsInDirectory(filepath);
             }

@@ -190,6 +190,13 @@ namespace ExcelCleanerNet45
         /// <returns>the formula that needs to be added to the cell as a string</returns>
         private string BuildFormula(ExcelWorksheet worksheet, List<Tuple<int, bool>> rowData, int column)
         {
+            if(rowData.Count == 0)
+            {
+                return "SUM()";
+            }
+
+
+
             StringBuilder formula = new StringBuilder("SUM(");
 
             foreach (Tuple<int, bool> i in rowData)

@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 namespace ExcelCleanerNet45.FormulaGeneration
 {
     /// <summary>
-    /// Functions the same way as the full table formula generator except that it only adds the non-formula cells in the
-    /// column instead of adding all cells (formula or not).
+    /// Functions the same way as the full table formula generator except that it only adds the non-formula cells in
+    /// the column instead of adding all cells (formula or not).
+    /// 
+    /// The only argument(s) for this class are the headers that are found at the start of the row with the 
+    /// summary formulas.
     /// </summary>
     internal class SumOtherSums : FullTableFormulaGenerator
     {

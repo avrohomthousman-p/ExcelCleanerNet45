@@ -382,7 +382,13 @@ namespace ExcelCleanerNet45
 
 
 
-                
+                case "UnitInvoiceReport":
+                case "VendorInvoiceReport":
+                    return new MultiFormulaGenerator(new PeriodicFormulasOnTop(), new SumOtherSums());
+
+
+
+
                 case "ReportAccountBalances":
                 case "ReportTenantBal":
                 case "LedgerReport":
@@ -393,8 +399,6 @@ namespace ExcelCleanerNet45
                 case "AgedAccountsReceivable":
                 case "CollectionsAnalysis":
                 case "InvoiceRecurringReport":
-                case "VendorInvoiceReport":
-                case "UnitInvoiceReport":
                     return new FullTableFormulaGenerator();
 
 
@@ -704,13 +708,16 @@ namespace ExcelCleanerNet45
 
 
                 case "VacancyLoss":
-                case "VendorInvoiceReport":
                 case "InvoiceRecurringReport":
-                case "UnitInvoiceReport":
                 case "RentRollPortfolio":
                 case "TrialBalance":
                     return new string[] { "Total:" };
 
+
+
+                case "UnitInvoiceReport":
+                case "VendorInvoiceReport":
+                    return new string[] { "1Amount Owed", "1Amount Paid", "1Balance", "2Total:" };
 
 
 

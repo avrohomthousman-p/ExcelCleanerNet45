@@ -79,9 +79,24 @@ namespace ExcelCleanerNet45.FormulaGeneration
             List<int> dataColumns = FindAllDataColumns(worksheet, headers);
 
 
-            
+            //now add a formula for each key in the appropriate columns
+            int startRow;
+            int endRow;
+            ExcelRange summaryCell;
+            for(int i = 0; i < keys.Count - 1; i++)
+            {
+                startRow = keys[i] + 1; //formula should start from the row after the summary cell
+                endRow = keys[i + 1] - 1; //formula should go until (but not including) the next formula cell
 
-            //TODO: complete this method
+                foreach(int col in dataColumns)
+                {
+                    summaryCell = worksheet.Cells[keys[i], col];
+
+                    string formula = FormulaManager.GenerateFormula(worksheet, startRow, endRow, col);
+
+                    FormulaManager.PutFormulaInCell(summaryCell, formula);
+                }
+            }
 
         }
 
@@ -122,7 +137,7 @@ namespace ExcelCleanerNet45.FormulaGeneration
         /// <returns>a list of all rows where keys can be found</returns>
         protected virtual List<int> FindAllSectionKeys(ExcelWorksheet worksheet)
         {
-            ExcelIterator iter = new ExcelIterator(worksheet, firstRowOfTable, 1);
+            ExcelIterator iter = new ExcelIterator(worksheet, firstRowOfTable + 1, 1);
 
 
             //find all the cells with keys
@@ -132,9 +147,35 @@ namespace ExcelCleanerNet45.FormulaGeneration
                         .ToList();
 
 
-            keys.Add(worksheet.Dimension.End.Row + 1); //add a cell to represent the end of the last section
+
+
+            //add a row number to represent the end of the last section
+            if (WorksheetHasFinalSummary(worksheet))
+            {
+                keys.Add(worksheet.Dimension.End.Row);
+            }
+            else
+            {
+                keys.Add(worksheet.Dimension.End.Row + 1);
+            }
+             
 
             return keys;
+        }
+
+
+
+        /// <summary>
+        /// Checks if the worksheet has a full table summary row at the bottom. Such a row should
+        /// not be included in the formula for the bottom-most section.
+        /// </summary>
+        /// <param name="worksheet">the worksheet getting the formulas</param>
+        /// <returns>true if the worksheet has a final summary row at the bottom and false otherwise</returns>
+        protected virtual bool WorksheetHasFinalSummary(ExcelWorksheet worksheet)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet, worksheet.Dimension.End.Row, 1);
+
+            return iter.GetCells(ExcelIterator.SHIFT_RIGHT).Any(cell => isSummaryCell(cell));
         }
 
 

@@ -493,10 +493,14 @@ namespace ExcelCleanerNet45
 
 
 
-            source.Copy(destination);
-            source.CopyStyles(destination);
+            //Copy the data
+            if(source.Address != destination.Address)
+            {
+                source.Copy(destination);
+                source.CopyStyles(destination);
 
-            source.Value = null;
+                source.Value = null;
+            }
         }
 
 

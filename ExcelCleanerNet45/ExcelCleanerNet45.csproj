@@ -64,6 +64,7 @@
     <Compile Include="FormulaGeneration\IFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\MultiFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\PeriodicFormulaGenerator.cs" />
+    <Compile Include="FormulaGeneration\PeriodicFormulasOnTop.cs" />
     <Compile Include="FormulaGeneration\ReportSpecificGenerators\ChargesCreditReportFormulas.cs" />
     <Compile Include="FormulaGeneration\FullTableSummaryColumn.cs" />
     <Compile Include="FormulaGeneration\ReportSpecificGenerators\RentRollHistorySheet1.cs" />

@@ -62,6 +62,7 @@
     <Compile Include="FormulaGeneration\FormulaManager.cs" />
     <Compile Include="FormulaGeneration\FullTableFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\IFormulaGenerator.cs" />
+    <Compile Include="FormulaGeneration\InternalRowSegmentGenerator.cs" />
     <Compile Include="FormulaGeneration\MultiFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\PeriodicFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\PeriodicFormulasOnTop.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="FormulaGeneration\RowSegmentFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\SummaryColumnGenerator.cs" />
     <Compile Include="FormulaGeneration\SummaryRowFormulaGenerator.cs" />
+    <Compile Include="FormulaGeneration\SumOfSumsPeriodic.cs" />
     <Compile Include="FormulaGeneration\SumOnlyBolds.cs" />
     <Compile Include="FormulaGeneration\SumOtherSums.cs" />
     <Compile Include="FormulaGeneration\SumWithinSegmentGenerator.cs" />

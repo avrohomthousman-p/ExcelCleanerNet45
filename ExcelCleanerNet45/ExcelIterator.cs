@@ -118,6 +118,25 @@ namespace ExcelCleanerNet45
 
 
 
+        /// <summary>
+        /// Advances the iterator to the next row.
+        /// </summary>
+        public void SkipRow()
+        {
+            this.row = Math.Min(this.row + 1, worksheet.Dimension.End.Row);
+        }
+
+
+
+        /// <summary>
+        /// Advances the iterator to the next column.
+        /// </summary>
+        public void SkipColumn()
+        {
+            this.col = Math.Min(this.col + 1, worksheet.Dimension.End.Column);
+        }
+
+
 
         /// <summary>
         /// Starting from the iterators current location, iterates and finds the first cell in the table that match 

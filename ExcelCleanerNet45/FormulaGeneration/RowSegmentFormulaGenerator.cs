@@ -88,7 +88,7 @@ namespace ExcelCleanerNet45
         /// <param name="startHeader">the text to look for to signal the start row</param>
         /// <param name="endHeader">The text to look for to signal the end row</param>
         /// <returns>a tuple containing the start-row, end-row, and column of the formula range</returns>
-        protected static IEnumerable<Tuple<int, int, int>> GetRowRangeForFormula(ExcelWorksheet worksheet, string startHeader, string endHeader)
+        protected virtual IEnumerable<Tuple<int, int, int>> GetRowRangeForFormula(ExcelWorksheet worksheet, string startHeader, string endHeader)
         {
             ExcelIterator iter = new ExcelIterator(worksheet);
 
@@ -103,11 +103,11 @@ namespace ExcelCleanerNet45
 
                 if (end > 0)
                 {
-                    yield return new Tuple<int, int, int>(cell.Item1, end, cell.Item2);
+                    yield return new Tuple<int, int, int>(cell.Item1, end, cell.Item2); //return startRow, endRow, column
 
 
                     //if we are not on the last row (index out of bounds check)
-                    if(end < worksheet.Dimension.End.Row)
+                    if (end < worksheet.Dimension.End.Row)
                     {
                         iter.SetCurrentLocation(end + 1, 1); //skip to the the next row (we dont expect 2 headers on one row)
                     }

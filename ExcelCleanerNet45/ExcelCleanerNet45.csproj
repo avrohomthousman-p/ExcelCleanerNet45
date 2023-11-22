@@ -71,6 +71,7 @@
     <Compile Include="FormulaGeneration\ReportSpecificGenerators\RentRollHistorySheet1.cs" />
     <Compile Include="FormulaGeneration\ReportSpecificGenerators\RentRollHistorySheet2.cs" />
     <Compile Include="FormulaGeneration\ReportSpecificGenerators\ReportCashRecipts.cs" />
+    <Compile Include="FormulaGeneration\ReportSpecificGenerators\TrialBalanceVarianceGenerator.cs" />
     <Compile Include="FormulaGeneration\ReportSpecificGenerators\VendorInvoiceReportFormulas.cs" />
     <Compile Include="FormulaGeneration\RowSegmentFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\SummaryColumnGenerator.cs" />

@@ -728,8 +728,10 @@ namespace ExcelCleanerNet45
 
 
                 case "TrialBalanceVariance":
-                    return new string[] { "Asset=Total Asset", "Liability=Total Liability", "Equity=Total Equity", 
-                        "Income=Total Income", "Expense=Total Expense", "Total:~Total Expense,Total Income,Total Equity,Total Liability,Total Asset" };
+                    return new string[] { "Asset=Total Asset", "Current Assets=Total Current Assets",
+                        "Liability=Total Liability", "Current Liabilities=Total Current Liabilities",
+                        "Equity=Total Equity", "Income=Total Income", "Expense=Total Expense",
+                        "Total:~Total Expense,Total Income,Total Equity,Total Liability,Total Asset" };
 
 
 

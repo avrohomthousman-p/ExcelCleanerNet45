@@ -58,7 +58,8 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
             int secondCol = FindNextColumnWithHeaders(worksheet, firstCol + 1);
 
 
-            //TODO: add formulas to the inner and outer segments
+            DoInnerSegments(worksheet, secondCol);
+            //TODO: add formulas to the segments
         }
 
 
@@ -195,6 +196,158 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
 
             return copy.GetCells(ExcelIterator.SHIFT_DOWN)
                        .Any(cell => FormulaManager.TextMatches(cell.Text, endHeaderRegex));
+        }
+
+
+
+        /// <summary>
+        /// Adds formulas to all the segments in the specified row. This function adds regular formulas,
+        /// not the array formulas that are needed for the outer segments.
+        /// </summary>
+        /// <param name="worksheet">the worksheet in need of formulas</param>
+        /// <param name="columnWithHeaders">the column the headers will be found in</param>
+        protected virtual void DoInnerSegments(ExcelWorksheet worksheet, int columnWithHeaders)
+        {
+            int matchingStartHeader;
+            ExcelIterator iter = new ExcelIterator(worksheet, 1, columnWithHeaders);
+
+            foreach(ExcelRange cell in iter.GetCells(ExcelIterator.SHIFT_DOWN))
+            {
+                matchingStartHeader = GetMatchingElement(startHeaders, cell.Text);
+
+                if (matchingStartHeader == -1) //it doesnt match any headers
+                {
+                    continue;
+                }
+                    
+
+
+                int endRow = FindRowOfEndHeader(worksheet, cell.Start.Row + 1,
+                                                    columnWithHeaders, endHeaders[matchingStartHeader]);
+
+                if (endRow == -1)
+                {
+                    continue;
+                }
+
+
+                FillInInnerFormulas(worksheet, cell.Start.Row, endRow, columnWithHeaders);
+
+
+                //advance iterator to end of this segment
+                if(endRow < worksheet.Dimension.End.Row)
+                {
+                    iter.SetCurrentLocation(endRow, columnWithHeaders);
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Finds the row that has the end header matching the specifed regex
+        /// </summary>
+        /// <param name="worksheet">the worksheet in need of formulas</param>
+        /// <param name="startRow">the first row to be checked for the end header</param>
+        /// <param name="col">the column to check in</param>
+        /// <param name="endHeaderRegex">the regex that the desired end header will match</param>
+        /// <returns>the row number of the end header, or -1 if no end header is found</returns>
+        protected virtual int FindRowOfEndHeader(ExcelWorksheet worksheet, int startRow, int col, string endHeaderRegex)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet, startRow, col);
+
+            ExcelRange endCell = iter.GetCells(ExcelIterator.SHIFT_DOWN)
+                                    .FirstOrDefault(cell => FormulaManager.TextMatches(cell.Text, endHeaderRegex));
+
+
+            if(endCell == null)
+            {
+                return -1;
+            }
+            else
+            {
+                return endCell.End.Row;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Inserts the formulas in each cell in the formula range that requires it.
+        /// </summary>
+        /// <param name="worksheet">the worksheet currently being given formulas</param>
+        /// <param name="startRow">the first row of the formula range (containing the header)</param>
+        /// <param name="endRow">the last row of the formula range (containing the total)</param>
+        /// <param name="col">the column of the header and total for the formula range</param>
+        protected virtual void FillInInnerFormulas(ExcelWorksheet worksheet, int startRow, int endRow, int col)
+        {
+
+            ExcelRange cell;
+
+
+
+            //Often there are multiple columns that require a formula, so we need to iterate
+            //and apply the formulas in many columns
+            for (col++; col <= worksheet.Dimension.End.Column; col++)
+            {
+                cell = worksheet.Cells[endRow, col];
+
+                if (this.isDataCell(cell))
+                {
+                    if (trimRange)
+                    {
+                        startRow += CountEmptyCellsOnTop(worksheet, startRow, endRow, col); //Skip the whitespace on top
+                    }
+                    string formula = FormulaManager.GenerateFormula(worksheet, startRow, endRow - 1, col);
+
+                    FormulaManager.PutFormulaInCell(cell, formula);
+                }
+                else if (!FormulaManager.IsEmptyCell(cell))
+                {
+                    return;
+                }
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// Counts the number of empty cells between the start header(inclusive) and the actual data cells in the 
+        /// formula range.
+        /// </summary>
+        /// <param name="worksheet">the worksheet in need of formulas</param>
+        /// <param name="startRow">the row where the start header was found</param>
+        /// <param name="endRow">te row where the end header was found</param>
+        /// <param name="col">the column of the formula range</param>
+        /// <returns>the number of empty cells at the start of the formula range</returns>
+        protected static int CountEmptyCellsOnTop(ExcelWorksheet worksheet, int startRow, int endRow, int col)
+        {
+            int emptyCells = 0;
+            ExcelRange cell;
+
+            for (; startRow <= endRow; startRow++)
+            {
+                cell = worksheet.Cells[startRow, col];
+                if (FormulaManager.IsEmptyCell(cell))
+                {
+                    emptyCells++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+
+            return emptyCells;
+        }
+
+
+
+        protected virtual void DoOuterSegments(ExcelWorksheet worksheet, int column)
+        {
+            //TODO
         }
     }
 }

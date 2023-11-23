@@ -65,6 +65,7 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
                 var generator = new RowSegmentFormulaGenerator();
                 generator.trimFormulaRange = this.trimFormulaRange;
                 generator.SetDataCellDefenition(this.isDataCell);
+                generator.InsertFormulas(worksheet, headers);
                 return;
             }
 

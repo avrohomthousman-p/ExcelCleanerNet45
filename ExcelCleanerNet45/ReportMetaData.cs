@@ -8,6 +8,7 @@ using System.IO;
 using System.Security.Cryptography.Xml;
 using System.Text.RegularExpressions;
 using OfficeOpenXml;
+using System.Linq;
 
 namespace ExcelCleanerNet45
 {
@@ -341,10 +342,37 @@ namespace ExcelCleanerNet45
 
                 case "ReportPayablesRegister":
                 case "AgedPayables":
-                case "AgedReceivables":
                     formulaGenerator = new FullTableFormulaGenerator();
                     formulaGenerator.SetDefenitionForBeyondFormulaRange(formulaGenerator.IsNonDataCell);
                     return formulaGenerator;
+
+
+
+
+                case "AgedReceivables":
+                    //This report sometimes has numerous rows with subtotals and sometimes does not
+                    if (NeedsSubtotals(workbook.Worksheets[0]))
+                    {
+                        formulaGenerator = new SumOtherSums();
+                        formulaGenerator.SetDefenitionForBeyondFormulaRange(cell => !FormulaManager.IsDollarValue(cell) 
+                                                                                 && !FormulaManager.IsEmptyCell(cell)
+                                                                                 && !FormulaManager.CellHasFormula(cell));
+
+
+                        PeriodicFormulaGenerator periodic = new PeriodicFormulaGenerator();
+                        periodic.SetSummaryCellDefenition(cell => cell.Style.Font.Bold && 
+                                        (FormulaManager.IsDollarValue(cell) || FormulaManager.CellHasFormula(cell)));
+
+                        return new MultiFormulaGenerator(formulaGenerator, periodic);
+                    }
+                    else
+                    {
+                        formulaGenerator = new FullTableFormulaGenerator();
+                        formulaGenerator.SetDefenitionForBeyondFormulaRange(formulaGenerator.IsNonDataCell);
+                        return formulaGenerator;
+                    }
+                    
+
 
 
 
@@ -705,8 +733,21 @@ namespace ExcelCleanerNet45
                 case "JournalLedger":
                 case "CollectionsAnalysisSummary":
                 case "AgedPayables":
-                case "AgedReceivables":
                     return new string[] { "Total" };
+
+
+
+
+                case "AgedReceivables":
+                    if (NeedsSubtotals(workbook.Worksheets[0]))
+                    {
+                        return new string[] { "1Total", "2r=\\d{1,4}[A-Z]\\-[A-Z]{1,4}", "20 - 30", "231 - 60",
+                                                "261 - 90", "2Over 90", "2Total"};
+                    }
+                    else
+                    {
+                        return new string[] { "Total" };
+                    }
 
 
 
@@ -783,6 +824,26 @@ namespace ExcelCleanerNet45
                 default:
                     return new string[0];
             }
+        }
+
+
+
+
+        /// <summary>
+        /// The AgedReceivables report sometimes has subtotals that need formulas and sometimes doesnt. This
+        /// function checks if it has them or not.
+        /// </summary>
+        /// <param name="worksheet">the worksheet that might need the subtotals</param>
+        /// <returns>true if the worksheet needs subtotals and false otherwise</returns>
+        private static bool NeedsSubtotals(ExcelWorksheet worksheet)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            iter.GetFirstMatchingCell(cell => cell.Text.Trim() == "Description");
+            int numSubtotals = iter.GetCells(ExcelIterator.SHIFT_DOWN)
+                                    .Count(cell => cell.Text.Trim() == "Total");
+
+
+            return numSubtotals >= 6;
         }
     }
 }

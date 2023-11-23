@@ -170,6 +170,10 @@ namespace ExcelCleanerNet45
 
 
                 case "TrialBalanceVariance":
+                    return new TrialBalanceVarianceGenerator();
+
+
+
                 case "ProfitAndLossStatementByJob":
                     RowSegmentFormulaGenerator gen = new RowSegmentFormulaGenerator();
                     gen.trimFormulaRange = false;

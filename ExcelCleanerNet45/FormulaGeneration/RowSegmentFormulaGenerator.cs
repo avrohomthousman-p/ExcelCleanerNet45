@@ -39,6 +39,7 @@ namespace ExcelCleanerNet45
 
 
 
+
         /// <inheritdoc/>
         public void SetDataCellDefenition(IsDataCell altImplementation)
         {

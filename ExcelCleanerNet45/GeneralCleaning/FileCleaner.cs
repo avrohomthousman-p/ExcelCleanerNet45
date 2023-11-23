@@ -397,7 +397,8 @@ namespace ExcelCleanerNet45
         /// <returns>true if the specified text is a dollar value and false otherwise</returns>
         private static bool IsDollarValue(string text)
         {
-            return text.StartsWith("$") || (text.StartsWith("($") && text.EndsWith(")"));
+            return (text.StartsWith("$") && Char.IsDigit(text[text.Length - 1])) 
+                    || (text.StartsWith("($") && text.EndsWith(")"));
         }
 
 

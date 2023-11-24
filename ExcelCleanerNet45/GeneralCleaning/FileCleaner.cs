@@ -7,6 +7,11 @@ using System.IO;
 
 namespace ExcelCleanerNet45
 {
+
+    /// <summary>
+    /// Handles all the general cleanup and hands the specifics over to a Merge Cleaner object and/or a 
+    /// Formula Generator object
+    /// </summary>
     public class FileCleaner
     {
 
@@ -270,8 +275,17 @@ namespace ExcelCleanerNet45
                     
 
                     //Skip Empty Cells
-                    if (cell.Text == null || cell.Text.Length == 0)
+                    if (cell.Text == null)
                     {
+                        continue;
+                    }
+
+
+                    //Some cells have an empty string, which stops nearby cells from displaying their
+                    //text outside the bounds of their cell.
+                    if(cell.Text == "")
+                    {
+                        cell.Value = null;
                         continue;
                     }
 

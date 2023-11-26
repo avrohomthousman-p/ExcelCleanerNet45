@@ -767,8 +767,10 @@ namespace ExcelCleanerNet45
 
 
                 case "ProfitAndLossStatementByJob":
-                    return new string[] { "Income=Total Income", "Expense=Total Expense", 
-                        "Net Income~Total Income,-Total Expense" };
+                    return new string[] { "Income=Total Income", "Expense=Total Expense",
+                        "Other Cash Adjustments=Total Other Cash Adjustments", "Non-Operating Income=Total Non-Operating Income", 
+                        "Net Income~Total Income,-Total Expense", "Net Operating Income~Total Income,-Total Expense",
+                        "Adjusted Net Income~Total Other Cash Adjustments,Total Non-Operating Income,Net Operating Income" };
 
 
 

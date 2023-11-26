@@ -14,7 +14,8 @@ namespace ExcelCleanerNet45
     /// is the header before  (to the left of) the cell that needs the formula and the other comma seperated 
     /// headers are headers in front of (to the left of) cells that should be included in the sum. If needed,
     /// you can also specify that a given header be subtracted instead of added by putting a minus sign before
-    /// the name of any of the headers.
+    /// the name of any of the headers. You can also have the generator add all instances of a specific header 
+    /// by putting a + sign beofre it.
     /// 
     /// Note: this class will NOT do all the formulas necessary on the worksheet, only the ones that cant be done by
     /// other systems becuase their cells are not near each other. This class should be used in addition to whatever other
@@ -115,7 +116,8 @@ namespace ExcelCleanerNet45
         private List<Tuple<int, bool>> GetRowsToIncludeInFormula(ExcelWorksheet worksheet, string[] headers, int rowOfFormula)
         {
 
-            List<Tuple<string, bool>> headerAndIsSubtraction = ConvertArray(headers);
+            //Tracks each header, if it should be subtracted, and if we want more than one of it
+            List<Tuple<string, bool, bool>> headerAndAddInstructions = ConvertArray(headers);
 
             List<Tuple<int, bool>> results = new List<Tuple<int, bool>>();
 
@@ -126,7 +128,7 @@ namespace ExcelCleanerNet45
             foreach(ExcelRange cell in iter.FindAllCellsReverse())
             {
                 //If we already found all the headers we need
-                if(headerAndIsSubtraction.Count == 0)
+                if(headerAndAddInstructions.Count == 0)
                 {
                     break;
                 }
@@ -139,14 +141,18 @@ namespace ExcelCleanerNet45
 
 
 
-                for(int i = 0; i < headerAndIsSubtraction.Count; i++)
+                for(int i = 0; i < headerAndAddInstructions.Count; i++)
                 {
-                    Tuple<string, bool> tup = headerAndIsSubtraction[i];
+                    Tuple<string, bool, bool> tup = headerAndAddInstructions[i];
 
                     if(FormulaManager.TextMatches(cell.Text, tup.Item1))
                     {
                         results.Add(new Tuple<int, bool>(iter.GetCurrentRow(), tup.Item2));
-                        headerAndIsSubtraction.RemoveAt(i);
+                        if (!tup.Item3)
+                        {
+                            headerAndAddInstructions.RemoveAt(i);
+                        }
+                        
                         break;
                     }
                 }
@@ -160,19 +166,27 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
-        /// Converts an array of headers into a list of Tuples storing headers without the leading minus and a bool that
-        /// is true if that header used to have a minus sign.
+        /// Converts an array of headers into a list of Tuples storing headers without the leading minus or plus,
+        /// a bool that is true if that header used to have a minus sign, and a bool set to true if it used to have 
+        /// a plus sign.
         /// </summary>
         /// <param name="headers">the headers that are to be included in the formula being created</param>
-        /// <returns>a list of each header and a bool isSubtraction (true if this row should be subtracted in the formula)</returns>
-        private List<Tuple<string, bool>> ConvertArray(string[] headers)
+        /// <returns>
+        /// a list of each header, a bool isSubtraction (true if this row should be subtracted in the formula), 
+        /// and a bool includeDuplicates (true if we want to include in the formula all instances of this header)
+        /// </returns>
+        private List<Tuple<string, bool, bool>> ConvertArray(string[] headers)
         {
             return headers.Select(                                      
                     (text => {
-                        if (text.StartsWith("-"))
-                            return new Tuple<string, bool>(text.Substring(1), true);
+                        if (text.StartsWith("+-") || text.StartsWith("-+"))
+                            return new Tuple<string, bool, bool>(text.Substring(2), true, true);
+                        else if (text.StartsWith("-"))
+                            return new Tuple<string, bool, bool>(text.Substring(1), true, false);
+                        else if (text.StartsWith("+"))
+                            return new Tuple<string, bool, bool>(text.Substring(1), false, true);
                         else
-                            return new Tuple<string, bool>(text, false);
+                            return new Tuple<string, bool, bool>(text, false, false);
                     }))
                 .ToList();
         }

@@ -103,7 +103,12 @@ namespace ExcelCleanerNet45
         /// <returns>true if the cell contains a percentage, and false otherwise</returns>
         internal static bool IsPercentage(ExcelRange cell)
         {
-            return TextMatches(cell.Text, "(100([.]00)?%)|([.]\\d\\d%)|(\\d{1,2}([.]\\d\\d)?%)"); //"1?\\d\\d(\\.\\d\\d)?%"
+            string cellText = cell.Text;
+            if (cellText.StartsWith("(") && cellText.EndsWith(")"))
+            {
+                cellText = cellText.Substring(1, cellText.Length - 2);
+            }
+            return TextMatches(cellText, "(100([.]00)?%)|([.]\\d\\d%)|(\\d{1,2}([.]\\d\\d)?%)"); //"1?\\d\\d(\\.\\d\\d)?%"
         }
 
 

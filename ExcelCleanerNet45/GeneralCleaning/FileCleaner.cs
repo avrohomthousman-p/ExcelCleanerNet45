@@ -312,7 +312,7 @@ namespace ExcelCleanerNet45
 
                     double unused;
 
-                    // if it is a number but not a dollar value (like an ID), we want to store it as a number,
+                    // if it is a number but not a dollar value (like an ID), we want to store it as a string,
                     // and not get an excel warning
                     if (Double.TryParse(cell.Text, out unused))   
                     {
@@ -327,6 +327,12 @@ namespace ExcelCleanerNet45
                     else if(cell.Text == "$")
                     {
                         cell.Style.Numberformat.Format = "$#,##0.00;($#,##0.00)";
+                        cell.Value = 0.0;
+                    }
+                    //Some reports have a % sign instead of a 0%
+                    else if (cell.Text == "%")
+                    {
+                        cell.Style.Numberformat.Format = "#0\\.00%;(#0\\.00%)";
                         cell.Value = 0.0;
                     }
                     // if it a dollar value WITHOUT cents and stored as a string,  we want to convert it to an int and
@@ -481,6 +487,11 @@ namespace ExcelCleanerNet45
         /// <returns>true if the text is a percentage stored in text, or false otherwise</returns>
         private static bool IsPercentage(string text)
         {
+            if(text.StartsWith("(") && text.EndsWith(")"))
+            {
+                text = text.Substring(1, text.Length - 2);
+            }
+
             return Regex.IsMatch(text, "^((100([.]00)?%)|([.]\\d\\d%)|(\\d{1,2}([.]\\d\\d)?%))$");
         }
 

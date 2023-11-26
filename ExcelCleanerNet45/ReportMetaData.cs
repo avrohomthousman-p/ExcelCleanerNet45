@@ -495,7 +495,7 @@ namespace ExcelCleanerNet45
                 case "ProfitAndLossStatementByPeriod":
                     return new string[] { "1Total", "2Total Income", "2Total Expense", "2Total Non-Operating Income",
                         "2Total Other Cash Adjustments", "Net Operating Income~-Total Expense,Total Income",
-                        "Net Income~Net Operating Income,-Total Expense",
+                        "Net Income~+Total Income,+-Total Expense",
                         "Adjusted Net Income~Total Non-Operating Income,Total Other Cash Adjustments,Net Operating Income" };
 
 

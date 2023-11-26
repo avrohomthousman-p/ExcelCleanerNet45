@@ -81,6 +81,7 @@ namespace ExcelCleanerNet45
                 var allHeaderCoordinates = iter.FindAllMatchingCoordinates(cell => FormulaManager.TextMatches(cell.Text, header));
 
                 
+                
                 //Find each instance of that header and add formulas
                 foreach(var coordinates in allHeaderCoordinates)
                 {

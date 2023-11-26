@@ -73,26 +73,6 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
 
 
-        //for debugging only
-        private string GetRowLetter(int col)
-        {
-            string alphebet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            col--;
-            string result = "" + alphebet[col % 26];
-
-            col /= 26;
-
-            if(col > 0)
-            {
-                result = "A" + result;
-            }
-
-            return result;
-        }
-
-
-
 
         /// <summary>
         /// Finds all the data columns in the worksheet
@@ -217,7 +197,8 @@ namespace ExcelCleanerNet45.GeneralCleaning
                 {
                     yield return rightSide;
                 }
-                else if(dataCols.Contains(leftSide))
+
+                if(dataCols.Contains(leftSide))
                 {
                     yield return leftSide;
                 }

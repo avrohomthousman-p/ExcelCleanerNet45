@@ -49,7 +49,7 @@ namespace ExcelCleanerNet45
 
 
         /// <inheritdoc/>
-        public void InsertFormulas(ExcelWorksheet worksheet, string[] headers)
+        public virtual void InsertFormulas(ExcelWorksheet worksheet, string[] headers)
         {
             string startHeader, endHeader;
 

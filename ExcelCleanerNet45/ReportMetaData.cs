@@ -163,10 +163,14 @@ namespace ExcelCleanerNet45
                 case "BalanceSheetDrillthrough":
                 case "BalanceSheetComp":
                 case "ProfitAndLossComp":
-                case "ProfitAndLossBudget":
                 case "BalanceSheetPropBreakdown":
                 case "ProfitAndLossExtendedVariance":
                     return new RowSegmentFormulaGenerator();
+
+
+
+                case "ProfitAndLossBudget":
+                    return new ProfitAndLossBudgetFormulas();
 
 
 

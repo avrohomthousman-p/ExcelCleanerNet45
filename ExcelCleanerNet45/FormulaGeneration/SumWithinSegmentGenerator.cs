@@ -31,6 +31,20 @@ namespace ExcelCleanerNet45.FormulaGeneration
 
 
 
+        private bool sumNonFormulas = true;
+        /// <summary>
+        /// If set to true, the summaries add all non-formulas in the range. If set to false
+        /// summaries add all formulas in the range.
+        /// </summary>
+        public bool SumNonFormulas
+        {
+            get { return sumNonFormulas; }
+            set { sumNonFormulas = value; }
+        }
+
+
+
+
         /// <inheritdoc/>
         protected override void FillInFormulas(ExcelWorksheet worksheet, int startRow, int endRow, int col)
         {
@@ -101,9 +115,17 @@ namespace ExcelCleanerNet45.FormulaGeneration
         /// <returns>a formula to be inserted in the proper cell</returns>
         protected virtual string BuildFormula(ExcelRange range)
         {
-            //Formula to add up all cells that don't contain a formula
+            //Formula to add up all cells that do/don't contain a formula
             //The _xlfn fixes a bug in excel
-            return $"SUM(IF(_xlfn.ISFORMULA({range.Address}), 0, {range.Address}))";
+
+            if (SumNonFormulas)
+            {
+                return $"SUM(IF(_xlfn.ISFORMULA({range.Address}), 0, {range.Address}))";
+            }
+            else
+            {
+                return $"SUM(IF(_xlfn.ISFORMULA({range.Address}), {range.Address}, 0))";
+            }
         }
 
 
@@ -156,10 +178,21 @@ namespace ExcelCleanerNet45.FormulaGeneration
             {
                 cell = worksheet.Cells[row, col];
 
-                if (!FormulaManager.CellHasFormula(cell) && isDataCell(cell))
+                if (SumNonFormulas)
                 {
-                    addresses.Add(cell.Address);
+                    if (!FormulaManager.CellHasFormula(cell) && isDataCell(cell))
+                    {
+                        addresses.Add(cell.Address);
+                    }
                 }
+                else
+                {
+                    if(FormulaManager.CellHasFormula(cell))
+                    {
+                        addresses.Add(cell.Address);
+                    }
+                }
+                
             }
 
             return addresses;

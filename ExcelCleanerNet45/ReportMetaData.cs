@@ -427,7 +427,8 @@ namespace ExcelCleanerNet45
                 case "ReportCashReceiptsSummary":
                     //seperate formula generator to add the monthly sections of the report
                     SumWithinSegmentGenerator sumEachMonth = new SumWithinSegmentGenerator();
-                    sumEachMonth.UseArrayFormula = true;
+                    sumEachMonth.UseArrayFormula = false;
+                    sumEachMonth.SumNonFormulas = false;
 
                     return new MultiFormulaGenerator(new FullTableFormulaGenerator(), sumEachMonth);
 

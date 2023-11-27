@@ -723,7 +723,7 @@ namespace ExcelCleanerNet45
                         "2Common Area CapEx=Total Common Area CapEx", "2CapEx=Total CapEx",
                         "2Apartment Renovation=Total Apartment Renovation",
                         "Total~Total Common Area CapEx,Total CapEx,Total Apartment Renovation",
-                        "Total:~Total Common Area CapEx,Total CapEx,Total Apartment Renovation" };
+                        "Total:~Total Common Area CapEx,+Total CapEx,Total Apartment Renovation" };
 
 
 

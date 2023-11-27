@@ -52,20 +52,7 @@ namespace ExcelCleanerNet45.FormulaGeneration
 
 
                     //this is the part that differs from the parent class
-
-                    if (useArrayFormula)
-                    {
-                        ExcelRange range = worksheet.Cells[startRow, col, endRow - 1, col];
-                        cell.CreateArrayFormula(BuildFormula(range));
-                    }
-                    else
-                    {
-                        cell.Formula = BuildNonArrayFormula(worksheet, startRow, endRow - 1, col);
-                    }
-                    
-                    cell.Style.Locked = true;
-                    cell.Style.Hidden = false;
-                    cell.Calculate();
+                    ExcecuteFormulaCreation(worksheet, cell, startRow, endRow, col);
 
 
                 }
@@ -74,6 +61,34 @@ namespace ExcelCleanerNet45.FormulaGeneration
                     return;
                 }
             }
+        }
+
+
+
+
+        /// <summary>
+        /// Places the correct formula type inside the cell, based on the settings chosen
+        /// </summary>
+        /// <param name="worksheet">the worksheet in need of formulas</param>
+        /// <param name="formulaCell">the cell getting the formula</param>
+        /// <param name="rangeTop">the top cell inside the range</param>
+        /// <param name="rangeBottom">the bottom cell inside the range (the formula cell itself)</param>
+        /// <param name="rangeCol">the column the range is in</param>
+        protected virtual void ExcecuteFormulaCreation(ExcelWorksheet worksheet, ExcelRange formulaCell, int rangeTop, int rangeBottom, int rangeCol)
+        {
+            if (useArrayFormula)
+            {
+                ExcelRange range = worksheet.Cells[rangeTop, rangeCol, rangeBottom - 1, rangeCol];
+                formulaCell.CreateArrayFormula(BuildFormula(range));
+            }
+            else
+            {
+                formulaCell.Formula = BuildNonArrayFormula(worksheet, rangeTop, rangeBottom - 1, rangeCol);
+            }
+
+            formulaCell.Style.Locked = true;
+            formulaCell.Style.Hidden = false;
+            formulaCell.Calculate();
         }
 
 

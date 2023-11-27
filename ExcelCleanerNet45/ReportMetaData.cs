@@ -427,7 +427,7 @@ namespace ExcelCleanerNet45
                 case "ReportCashReceiptsSummary":
                     //seperate formula generator to add the monthly sections of the report
                     SumWithinSegmentGenerator sumEachMonth = new SumWithinSegmentGenerator();
-                    sumEachMonth.UseArrayFormula = false;
+                    sumEachMonth.UseArrayFormula = true;
 
                     return new MultiFormulaGenerator(new FullTableFormulaGenerator(), sumEachMonth);
 
@@ -559,7 +559,6 @@ namespace ExcelCleanerNet45
                         case 0:
                             return new string[] { "1Total Tenant Receivables:", "1Total Other Receivables:", 
                                 $"2{anyMonth} {anyYear}=Total For {anyMonth} {anyYear}:",
-                                //$"Total For {anyMonth} [12]\\d\\d\\d:~Total Tenant Receivables:,Total Other Receivables:",
                                 $"Total For {anyProperty}:~+Total For {anyMonth} [12]\\d\\d\\d:" };
 
                         default:

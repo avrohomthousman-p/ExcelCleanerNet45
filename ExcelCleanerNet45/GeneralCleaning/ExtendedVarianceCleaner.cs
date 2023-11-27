@@ -29,7 +29,6 @@ namespace ExcelCleanerNet45.GeneralCleaning
         {
             int referenceRow =  base.topTableRow; //we want the bottom row to align with the reference row
             int mainRow = FindLastNonEmptyRow(worksheet);
-            Console.WriteLine($"main row = {mainRow}, reference row = {referenceRow}");
 
             ExcelRange referenceCell, actualCell;
 
@@ -51,7 +50,6 @@ namespace ExcelCleanerNet45.GeneralCleaning
                 }
                 else
                 {
-                    Console.WriteLine($"reference cell = {referenceCell.Address} main cell = {actualCell}");
                     MoveCellIfNecessary(worksheet, referenceCell, actualCell);
 
                     //This code seems to fix some strange bug in the IEnumerable functions

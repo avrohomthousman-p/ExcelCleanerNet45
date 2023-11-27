@@ -77,7 +77,6 @@
     <Compile Include="FormulaGeneration\RowSegmentFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\SummaryColumnGenerator.cs" />
     <Compile Include="FormulaGeneration\SummaryRowFormulaGenerator.cs" />
-    <Compile Include="FormulaGeneration\SumOfSumsPeriodic.cs" />
     <Compile Include="FormulaGeneration\SumOnlyBolds.cs" />
     <Compile Include="FormulaGeneration\SumOtherSums.cs" />
     <Compile Include="FormulaGeneration\SumWithinSegmentGenerator.cs" />

@@ -110,7 +110,7 @@ namespace ExcelCleanerNet45
                     //if we are not on the last row (index out of bounds check)
                     if (end < worksheet.Dimension.End.Row)
                     {
-                        iter.SetCurrentLocation(end + 1, 1); //skip to the the next row (we dont expect 2 headers on one row)
+                        iter.SetCurrentLocation(end /* + 1*/, 1); //skip to the the next row (we dont expect 2 headers on one row)
                     }
                     
                 }

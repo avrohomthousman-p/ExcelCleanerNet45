@@ -424,18 +424,28 @@ namespace ExcelCleanerNet45
 
 
 
+                case "ReportCashReceiptsSummary":
+                    //seperate formula generator to add the monthly sections of the report
+                    SumWithinSegmentGenerator sumEachMonth = new SumWithinSegmentGenerator();
+                    sumEachMonth.UseArrayFormula = false;
+
+                    return new MultiFormulaGenerator(new FullTableFormulaGenerator(), sumEachMonth);
+
+
+
 
                 case "ReportAccountBalances":
                 case "ReportTenantBal":
                 case "LedgerReport":
                 case "RentRollActivity_New":
                 case "RentRollActivity":
-                case "ReportCashReceiptsSummary":
                 case "JournalLedger":
                 case "AgedAccountsReceivable":
                 case "CollectionsAnalysis":
                 case "InvoiceRecurringReport":
                     return new FullTableFormulaGenerator();
+
+
 
 
 
@@ -547,12 +557,13 @@ namespace ExcelCleanerNet45
                     switch (worksheetNum)
                     {
                         case 0:
-                            return new string[] { "Total Tenant Receivables:", "Total Other Receivables:", 
-                                $"Total For {anyMonth} [12]\\d\\d\\d:~Total Tenant Receivables:,Total Other Receivables:",
-                                $"Total For {anyProperty}:~Total For {anyMonth} [12]\\d\\d\\d:" };
+                            return new string[] { "1Total Tenant Receivables:", "1Total Other Receivables:", 
+                                $"2{anyMonth} {anyYear}=Total For {anyMonth} {anyYear}:",
+                                //$"Total For {anyMonth} [12]\\d\\d\\d:~Total Tenant Receivables:,Total Other Receivables:",
+                                $"Total For {anyProperty}:~+Total For {anyMonth} [12]\\d\\d\\d:" };
 
                         default:
-                            return new string[] { "Total Tenant Receivables:" };
+                            return new string[] { "1Total Tenant Receivables:" };
                     }
 
 

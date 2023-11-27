@@ -67,7 +67,9 @@ namespace ExcelCleanerNet45
 
 
                 case "ProfitAndLossExtendedVariance":
-                    return new ExtendedVarianceCleaner();
+                    m = new ExtendedVarianceCleaner();
+                    m.MoveMajorHeaders = false;
+                    return m;
 
 
 

@@ -96,11 +96,6 @@ namespace ExcelCleanerNet45.FormulaGeneration
 
             var cells = iter.GetCellCoordinates(ExcelIterator.SHIFT_UP, cell => base.beyondFormulaRange(cell));
 
-            if(cells.Count() == 0)
-            {
-                Console.WriteLine(worksheet.Cells[iter.GetCurrentRow(), iter.GetCurrentCol()].Text);
-            }
-
             return cells.Last().Item1;
         }
     }

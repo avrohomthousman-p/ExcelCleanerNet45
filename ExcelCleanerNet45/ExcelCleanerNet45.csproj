@@ -63,6 +63,7 @@
     <Compile Include="FormulaGeneration\FullTableFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\IFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\InternalRowSegmentGenerator.cs" />
+    <Compile Include="FormulaGeneration\MetaDataGathering.cs" />
     <Compile Include="FormulaGeneration\MultiFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\PeriodicFormulaGenerator.cs" />
     <Compile Include="FormulaGeneration\PeriodicFormulasOnTop.cs" />

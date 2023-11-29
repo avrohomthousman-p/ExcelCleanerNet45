@@ -357,7 +357,7 @@ namespace ExcelCleanerNet45
 
                 case "AgedReceivables":
                     //This report sometimes has numerous rows with subtotals and sometimes does not
-                    if (NeedsSubtotals(workbook.Worksheets[0]))
+                    if (MetaDataGathering.AgedReceivablesNeedsSubtotals(workbook.Worksheets[0]))
                     {
                         formulaGenerator = new SumOtherSums();
                         formulaGenerator.SetDefenitionForBeyondFormulaRange(cell => !FormulaManager.IsDollarValue(cell) 
@@ -718,6 +718,11 @@ namespace ExcelCleanerNet45
 
 
                 case "PayablesAccountReport":
+                    return MetaDataGathering.GetHeadersForPayablesAccountReport(workbook.Worksheets[worksheetNum]);
+
+
+                    //old version
+                    /*
                     return new string[] { "1Pool Furniture=Total Pool Furniture", "1Hallways=Total Hallways", 
                         "1Garage=Total Garage", "1Elevators=Total Elevators", "1Clubhouse=Total Clubhouse",
                         "1Painting=Total Painting", "1HVAC=Total HVAC", "1Windows=Total Windows", "1Appliances=Total Appliances",
@@ -726,6 +731,7 @@ namespace ExcelCleanerNet45
                         "2Apartment Renovation=Total Apartment Renovation",
                         "Total~Total Common Area CapEx,Total CapEx,Total Apartment Renovation",
                         "Total:~Total Common Area CapEx,+Total CapEx,Total Apartment Renovation" };
+                        */
 
 
 
@@ -756,7 +762,7 @@ namespace ExcelCleanerNet45
 
 
                 case "AgedReceivables":
-                    if (NeedsSubtotals(workbook.Worksheets[0]))
+                    if (MetaDataGathering.AgedReceivablesNeedsSubtotals(workbook.Worksheets[0]))
                     {
                         return new string[] { "1Total", "2r=\\d{1,4}[A-Z]\\-[A-Z]{1,4}", "20 - 30", "231 - 60",
                                                 "261 - 90", "2Over 90", "2Total"};
@@ -844,26 +850,6 @@ namespace ExcelCleanerNet45
                 default:
                     return new string[0];
             }
-        }
-
-
-
-
-        /// <summary>
-        /// The AgedReceivables report sometimes has subtotals that need formulas and sometimes doesnt. This
-        /// function checks if it has them or not.
-        /// </summary>
-        /// <param name="worksheet">the worksheet that might need the subtotals</param>
-        /// <returns>true if the worksheet needs subtotals and false otherwise</returns>
-        private static bool NeedsSubtotals(ExcelWorksheet worksheet)
-        {
-            ExcelIterator iter = new ExcelIterator(worksheet);
-            iter.GetFirstMatchingCell(cell => cell.Text.Trim() == "Description");
-            int numSubtotals = iter.GetCells(ExcelIterator.SHIFT_DOWN)
-                                    .Count(cell => cell.Text.Trim() == "Total");
-
-
-            return numSubtotals >= 6;
         }
     }
 }

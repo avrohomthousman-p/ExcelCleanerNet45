@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 
 namespace ExcelCleanerNet45.FormulaGeneration
 {
+    
+
+
     /// <summary>
     /// Contains methods used to gather metadata about a report at runtime.
     /// </summary>
     internal static class MetaDataGathering
     {
+
+        #region PayablesAccountReport
+
 
         /// <summary>
         /// Gets the appropriate headers that are found in the PayablesAccountReport and are needed by the
@@ -163,6 +169,12 @@ namespace ExcelCleanerNet45.FormulaGeneration
         }
 
 
+        #endregion
+
+
+
+
+        #region AgedRecievables report
 
 
         /// <summary>
@@ -181,5 +193,36 @@ namespace ExcelCleanerNet45.FormulaGeneration
 
             return numSubtotals >= 6;
         }
+
+
+
+        #endregion
+
+
+
+        #region LedgerReport
+
+
+        /// <summary>
+        /// Reads the report and finds the headers in it that signal the formula cell
+        /// </summary>
+        /// <param name="worksheet">the worksheet that will soon get formulas</param>
+        /// <returns>a list of headers that should be used as the arguments for the FormulaGenerator of this report</returns>
+        internal static string[] GetHeadersForLedgerReport(ExcelWorksheet worksheet)
+        {
+            ExcelRange headerCell = worksheet.Cells[worksheet.Dimension.End.Row, 1];
+
+            if(FormulaManager.IsEmptyCell(headerCell) || !headerCell.Style.Font.Bold)
+            {
+                return new string[0]; //no headers found
+            }
+            else
+            {
+                return new string[] { headerCell.Text.Trim() };
+            }
+        }
+
+
+        #endregion
     }
 }

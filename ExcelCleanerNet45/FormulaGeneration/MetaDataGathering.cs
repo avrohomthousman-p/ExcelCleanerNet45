@@ -91,14 +91,14 @@ namespace ExcelCleanerNet45.FormulaGeneration
 
             foreach (ExcelRange startCell in iter.GetCells(ExcelIterator.SHIFT_DOWN))
             {
-                if (FormulaManager.IsEmptyCell(startCell))
+                if (FormulaManager.IsEmptyCell(startCell) || !startCell.Style.Font.Bold)
                 {
                     continue;
                 }
 
 
                 ExcelRange endCell = FindEndHeader(worksheet, startCell);
-                if (endCell != null)
+                if (endCell != null && endCell.Style.Font.Bold)
                 {
                     yield return startCell.Text.Trim() + "=" + endCell.Text.Trim();
                     iter.SetCurrentLocation(endCell.End.Row, endCell.End.Column);

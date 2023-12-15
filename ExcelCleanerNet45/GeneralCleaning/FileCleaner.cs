@@ -524,6 +524,9 @@ namespace ExcelCleanerNet45
             {
                 MoveOutOfPlaceSummaryCells(worksheet);
             }
+
+
+            EnsureAlternatingColors(worksheet);
         }
 
 
@@ -570,6 +573,54 @@ namespace ExcelCleanerNet45
             return destination.Text == null || destination.Text.Length == 0;
         }
 
+
+
+        /// <summary>
+        /// Many reports have the rows alternate between white and grey, but then have some cells
+        /// with the wrong color breaking the pattern. This function corrects those cells.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        private static void EnsureAlternatingColors(ExcelWorksheet worksheet)
+        {
+            //some reports have some empty columns on the left hand side. We want to ignore those columns
+            int col = new ExcelIterator(worksheet)
+                        .GetFirstMatchingCell(cell => cell.Style.Fill.PatternType == ExcelFillStyle.Solid)
+                        .Start.Column; 
+
+
+            //for each row that is colored grey, make sure it has no white cells
+            ExcelRange currentCell;
+            for(int i = 1; i <= worksheet.Dimension.End.Row; i++)
+            {
+
+                currentCell = worksheet.Cells[i, col];
+                if (currentCell.Style.Fill.PatternType == ExcelFillStyle.Solid) //if this row is grey
+                {
+                    //make all cells in the row grey
+                    MakeCellsGrey(worksheet, i, col);
+                }
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Makes all cells in the specified row display a solid color.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="row">the row that needs a solid color</param>
+        /// <param name="startCol">the column number we should start checking at</param>
+        private static void MakeCellsGrey(ExcelWorksheet worksheet, int row, int startCol)
+        {
+            ExcelRange cell;
+
+            for(int i = startCol; i <= worksheet.Dimension.End.Column; i++)
+            {
+                cell = worksheet.Cells[row, i];
+                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            }
+        }
     }
 
 }

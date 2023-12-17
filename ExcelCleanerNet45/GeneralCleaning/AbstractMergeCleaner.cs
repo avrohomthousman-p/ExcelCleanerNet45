@@ -265,6 +265,7 @@ namespace ExcelCleanerNet45
             int startRow = cells.Start.Row;
             int endRow = startRow + numNewRows;
 
+            //add empty rows to fit the text on different lines
             worksheet.InsertRow(startRow + 1, numNewRows);
 
 
@@ -276,6 +277,13 @@ namespace ExcelCleanerNet45
 
                 CopyCellStyles(cells, currentCell);
             }
+
+
+            //if the original cell had a bottom border, we want to move that bottom border to the last new row 
+
+            worksheet.Cells[endRow, cells.Start.Column].Style.Border.Bottom.Style = cells.Style.Border.Bottom.Style;
+            cells.Style.Border.Bottom.Style = ExcelBorderStyle.None; //remove the bottom border of the top cell
+
         }
 
 

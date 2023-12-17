@@ -28,35 +28,6 @@ namespace ExcelCleanerNet45
             }
             else
             {
-                // C:\Users\avroh\Downloads\ReportPayablesRegister.xlsx
-                // C:\Users\avroh\Downloads\DistributionsReport.xlsx
-                // C:\Users\avroh\Downloads\ProfitAndLossComp.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\PayablesAccountReport_large.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\PayablesAccountReport_1Prop.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\ReportPayablesRegister.xlsx
-
-                // C:\Users\avroh\Downloads\ExcelProject\ProfitAndLossStatementDrillthrough.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\AgedReceivables.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\LedgerExport.xlsx
-
-                // C:\Users\avroh\Downloads\ExcelProject\TrialBalance.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\ProfitAndLossStatementByPeriod.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\testFile.xlsx
-
-                // C:\Users\avroh\Downloads\ExcelProject\BalanceSheetComp_742023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\BalanceSheetDrillthrough_722023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\BankReconcilliation_722023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\PaymentsHistory_722023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\LedgerReport_722023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports\AgedReceivables_7102023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports\BalanceSheetComp_7102023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports\AdjustmentReportMult_7102023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-2\AdjustmentReport_7102023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-3\CashFlow_7182023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-3\ChargesCreditsReport_7182023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-3\ProfitAndLossBudget_7182023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-3\CreditCardStatement_7182023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-3\CollectionsAnalysisSummary_7182023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\AgedAccountsReceivable_7192023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\BankReconcilliation_7192023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\ChargesCreditsReport_7192023.xlsx
@@ -134,12 +105,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\CCTransactionsReport.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportTenantSummary.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\UnitInvoiceReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\VendorPropertyReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\ReportAccountBalances_8222023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\BankReconcilliation.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\full-test\LedgerReport_2.xlsx
-                // C:\Users\avroh\Downloads\ReportCashReceiptsSummary.xlsx
-                // C:\Users\avroh\Downloads\CCRegisterReport.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\SubsidyRentRollReport.xlsx
 
 
 

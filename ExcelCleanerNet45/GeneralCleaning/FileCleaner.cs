@@ -583,12 +583,22 @@ namespace ExcelCleanerNet45
         private static void EnsureAlternatingColors(ExcelWorksheet worksheet)
         {
             //some reports have some empty columns on the left hand side. We want to ignore those columns
-            int col = new ExcelIterator(worksheet)
-                        .GetFirstMatchingCell(cell => cell.Style.Fill.PatternType == ExcelFillStyle.Solid)
-                        .Start.Column; 
+            int col;
+            ExcelRange temp = new ExcelIterator(worksheet)
+                        .GetFirstMatchingCell(cell => cell.Style.Fill.PatternType == ExcelFillStyle.Solid);
+            
+            if(temp == null)
+            {
+                return; //this report has no colored rows
+            }
+            else
+            {
+                col = temp.Start.Column;
+            }
 
 
-            //for each row that is colored grey, make sure it has no white cells
+
+            //for each row that is colored grey, make sure it has no white cells in it
             ExcelRange currentCell;
             for(int i = 1; i <= worksheet.Dimension.End.Row; i++)
             {

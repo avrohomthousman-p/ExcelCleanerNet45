@@ -117,6 +117,19 @@ namespace ExcelCleanerNet45
 
 
 
+                case "SecurityReport":
+                    m = new PrimaryMergeCleaner();
+                    m.AddCleanupJob(worksheet => 
+                    {
+                        //resize the last row
+                        int lastRow = worksheet.Dimension.End.Row;
+                        worksheet.Row(lastRow).Height = 16.0;
+                    });
+
+                    return m;
+
+
+
                 case "Budget":
                     return new ReAlignDataCells();
 

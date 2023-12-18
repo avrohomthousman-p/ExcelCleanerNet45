@@ -1,7 +1,7 @@
 ﻿using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
-
+using System.Collections.Generic;
 
 namespace ExcelCleanerNet45
 {
@@ -11,6 +11,10 @@ namespace ExcelCleanerNet45
     /// </summary>
     internal abstract class AbstractMergeCleaner : IMergeCleaner
     {
+
+        //Used to track all the jobs that must be done in the AdditionalCleanup method
+        private List<Action<ExcelWorksheet>> Cleanups = new List<Action<ExcelWorksheet>>();
+
 
         protected bool moveMajorHeaders = true;
 
@@ -77,11 +81,29 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
+        /// Adds a cleanup job to the list of cleanup actions that must be done
+        /// </summary>
+        /// <param name="job">the job that must be executed during the initial cleanup</param>
+        internal void AddCleanupJob(Action<ExcelWorksheet> job)
+        {
+            this.Cleanups.Add(job);
+        }
+
+
+
+        /// <summary>
         /// Does all additional cleanup that is needed for the specified report
         /// </summary>
         /// <param name="worksheet">the worksheet being cleaned</param>
         /// <param name="reportName">the report being cleaned</param>
-        protected abstract void AdditionalCleanup(ExcelWorksheet worksheet);
+        protected virtual void AdditionalCleanup(ExcelWorksheet worksheet)
+        {
+            //execute any additional cleaning jobs that were added by the AddCleanupJob() function
+            foreach (Action<ExcelWorksheet> job in Cleanups)
+            {
+                job.Invoke(worksheet);
+            }
+        }
 
 
 

@@ -39,7 +39,7 @@ namespace ExcelCleanerNet45.GeneralCleaning
         protected override void AdditionalCleanup(ExcelWorksheet worksheet)
         {
             base.AdditionalCleanup(worksheet);
-
+            
             RealignCells(worksheet);
         }
 

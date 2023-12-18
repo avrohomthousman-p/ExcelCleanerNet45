@@ -84,6 +84,18 @@ namespace ExcelCleanerNet45
 
 
 
+                case "PaymentsHistory":
+                    switch (worksheetNumber)
+                    {
+                        case 1:
+                            return new ReAlignDataCells("Grand Total:");
+
+                        default:
+                            return new PrimaryMergeCleaner();
+                    }
+
+
+
                 case "RentRollHistory":
                     switch (worksheetNumber)
                     {

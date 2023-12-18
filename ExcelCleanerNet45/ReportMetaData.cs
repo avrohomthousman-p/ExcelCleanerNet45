@@ -88,7 +88,17 @@ namespace ExcelCleanerNet45
                     switch (worksheetNumber)
                     {
                         case 1:
-                            return new ReAlignDataCells("Vacancy %");
+                            m = new ReAlignDataCells("Vacancy %");
+
+                            //the data in the first column gets hidden as the row is collapsed
+                            m.AddCleanupJob(new Action<ExcelWorksheet>(worksheet =>
+                            {
+                                worksheet.Column(1).Width = 1.5;
+                            }));
+
+
+                            return m;
+
                         default:
                             return new PrimaryMergeCleaner();
                     }

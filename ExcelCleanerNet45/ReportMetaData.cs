@@ -66,6 +66,24 @@ namespace ExcelCleanerNet45
 
 
 
+                case "ProfitAndLossComp":
+                    m = new PrimaryMergeCleaner();
+                    m.AddCleanupJob(worksheet => 
+                    {
+                        //Header with text Cash Basis is often not aligned correctly
+
+                        ExcelIterator iter = new ExcelIterator(worksheet);
+                        ExcelRange cell = iter.GetFirstMatchingCell(c => c.Text.Trim() == "Cash Basis");
+                        if(cell != null)
+                        {
+                            cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
+                        }
+                    });
+
+
+                    return m;
+
+
                 case "ProfitAndLossExtendedVariance":
                     m = new ExtendedVarianceCleaner();
                     m.MoveMajorHeaders = false;

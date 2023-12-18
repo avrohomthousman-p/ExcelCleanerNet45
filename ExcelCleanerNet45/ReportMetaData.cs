@@ -656,7 +656,8 @@ namespace ExcelCleanerNet45
 
                 case "RentRollActivityItemized":
                 case "RentRollActivityItemized_New":
-                    return new string[] { "1r=(\\d{4})|([A-Z]\\d\\d)", "1Beg\\s+Balance", "1Charges", "1Adjustments",
+                    //Old regex: r=(\\d{4})|([A-Z]\\d\\d)
+                    return new string[] { "1r=[A-Z0-9]+", "1Beg\\s+Balance", "1Charges", "1Adjustments",
                         "1Payments", "1End Balance", "1Change", "2Total:" };
 
 
@@ -786,9 +787,25 @@ namespace ExcelCleanerNet45
                 case "AgedReceivables":
                     if (MetaDataGathering.AgedReceivablesNeedsSubtotals(workbook.Worksheets[0]))
                     {
-                        return new string[] { "1Total", "2r=\\d{1,4}[A-Z]\\-[A-Z]{1,4}", "20 - 30", "231 - 60",
-                                                "261 - 90", "2Over 90", "2Total"};
-                    }
+                        var headers = MetaDataGathering
+                            .GetColumnNamesForAgedReceivablesSubtotals(workbook.Worksheets[0]);
+                            
+
+
+                        List<string> args = new List<string>();
+                        args.Add("1Total");
+                        args.Add("2r=[A-Z]?\\d{1,4}[A-Z]?");
+                        args.AddRange(headers);
+
+
+                        return args.ToArray();
+
+
+                        //old solution
+                        /*return new string[] { "1Total", "2r=\\d{1,4}[A-Z]\\-[A-Z]{1,4}", "20 - 30", "231 - 60",
+                                                "261 - 90", "2Over 90", "2Total"};*/
+                                             
+            }
                     else
                     {
                         return new string[] { "Total" };

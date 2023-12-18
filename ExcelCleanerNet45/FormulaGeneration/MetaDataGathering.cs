@@ -196,6 +196,49 @@ namespace ExcelCleanerNet45.FormulaGeneration
 
 
 
+
+        /// <summary>
+        /// Reads the column names that requires subtotals from the AgedReceivables report file.
+        /// </summary>
+        /// <param name="worksheet">the worksheet that needs formulas</param>
+        /// <returns>a list of all the columns names that appear after the column named description</returns>
+        internal static IEnumerable<string> GetColumnNamesForAgedReceivablesSubtotals(ExcelWorksheet worksheet)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            iter.GetFirstMatchingCell(cell => cell.Text.Trim() == "Description");
+            iter.SkipColumn(); //dont include the description column iteself
+
+
+            return iter.GetCells(ExcelIterator.SHIFT_RIGHT)
+                        .Where(cell => !FormulaManager.IsEmptyCell(cell))
+                        .Select(cell => "2" + ConvertTextToRegex(cell.Text));
+        }
+
+
+
+        /// <summary>
+        /// Converts text found in the worksheet into a suitable regex that would match that text.
+        /// 
+        /// This is really onl necessary if the text contains letters that mean something special in a regex like
+        /// +, ^, or $
+        /// </summary>
+        /// <param name="text">the text found in the worksheet</param>
+        /// <returns>a regex that matches the specified text</returns>
+        private static string ConvertTextToRegex(string text)
+        {
+            text = text.Trim();
+
+            text = text.Replace("+", "\\+");
+            text = text.Replace("$", "\\$");
+            text = text.Replace("^", "\\^");
+            text = text.Replace("(", "\\(");
+            text = text.Replace(")", "\\)");
+
+            return text;
+        }
+
+
+
         #endregion
 
 

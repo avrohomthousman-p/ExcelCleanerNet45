@@ -41,7 +41,6 @@ namespace ExcelCleanerNet45
                 case "SummaryReport":
                 case "TrialBalance":
                 case "TrialBalanceVariance":
-                case "BalanceSheetDrillthrough":
                 case "CashFlow":
                 case "InvoiceDetail":
                 case "ReportTenantSummary":
@@ -51,9 +50,41 @@ namespace ExcelCleanerNet45
 
 
 
+                case "BalanceSheetDrillthrough":
+                    AbstractMergeCleaner m = new BackupMergeCleaner();
+
+                    //Make sure all data cells in the data column have the correct alignment
+                    m.AddCleanupJob(worksheet => 
+                    {
+                        ExcelIterator iter = new ExcelIterator(worksheet);
+                        iter.GetFirstMatchingCell(cell => FormulaManager.IsDollarValue(cell));
+
+                        ExcelIterator copy = new ExcelIterator(iter);
+
+
+                        var mostCommonAlignment = iter.GetCells(ExcelIterator.SHIFT_DOWN)
+                                                    .GroupBy(cell => cell.Style.HorizontalAlignment)
+                                                    .OrderByDescending(group => group.Count())
+                                                    .FirstOrDefault().Key;
+
+
+                        var dataCells = copy.GetCells(ExcelIterator.SHIFT_DOWN)
+                                            .Where(cell => FormulaManager.IsDollarValue(cell));
+
+                        foreach(ExcelRange cell in dataCells)
+                        {
+                            cell.Style.HorizontalAlignment = mostCommonAlignment;
+                        }
+                        
+                    });
+
+                    return m;
+
+
+
                 case "ProfitAndLossStatementDrillthrough":
                 case "ProfitAndLossStatementDrillThrough":
-                    AbstractMergeCleaner m = new BackupMergeCleaner();
+                    m = new BackupMergeCleaner();
                     m.MoveMajorHeaders = false;
                     return m;
 
@@ -66,6 +97,7 @@ namespace ExcelCleanerNet45
 
 
 
+                case "ProfitAndLossStatementByPeriod":
                 case "ProfitAndLossComp":
                     m = new PrimaryMergeCleaner();
                     m.AddCleanupJob(worksheet => 

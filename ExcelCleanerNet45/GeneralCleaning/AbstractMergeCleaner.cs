@@ -101,7 +101,16 @@ namespace ExcelCleanerNet45
             //execute any additional cleaning jobs that were added by the AddCleanupJob() function
             foreach (Action<ExcelWorksheet> job in Cleanups)
             {
-                job.Invoke(worksheet);
+                try
+                {
+                    job.Invoke(worksheet);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine("Error while doing custom cleanup job. Message: ");
+                    Console.WriteLine(e.Message);
+                }
+                
             }
         }
 

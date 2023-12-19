@@ -82,6 +82,24 @@ namespace ExcelCleanerNet45
 
 
 
+                case "ReportAccountBalances":
+                    m = new BackupMergeCleaner();
+
+                    //this report has some of its data rows frozen (they stick to the screen as you scroll away)
+                    //we dont want that
+                    m.AddCleanupJob(worksheet => {
+                        //First find the first data cell, so we can freeze only the rows above it
+                        ExcelIterator iter = new ExcelIterator(worksheet);
+                        int row = iter.GetFirstMatchingCell(cell => FormulaManager.IsDollarValue(cell)).Start.Row;
+
+                        worksheet.View.UnFreezePanes();
+                        worksheet.View.FreezePanes(row, worksheet.Dimension.End.Column);
+                    });
+
+                    return m;
+
+
+
                 case "ProfitAndLossStatementDrillthrough":
                 case "ProfitAndLossStatementDrillThrough":
                     m = new BackupMergeCleaner();

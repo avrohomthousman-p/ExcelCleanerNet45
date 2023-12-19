@@ -582,19 +582,19 @@ namespace ExcelCleanerNet45
         /// <param name="worksheet">the worksheet being cleaned</param>
         private static void EnsureAlternatingColors(ExcelWorksheet worksheet)
         {
+
             //some reports have some empty columns on the left hand side. We want to ignore those columns
             int col;
             ExcelRange temp = new ExcelIterator(worksheet)
                         .GetFirstMatchingCell(cell => cell.Style.Fill.PatternType == ExcelFillStyle.Solid);
             
+
+
             if(temp == null)
-            {
                 return; //this report has no colored rows
-            }
             else
-            {
                 col = temp.Start.Column;
-            }
+
 
 
 
@@ -610,6 +610,49 @@ namespace ExcelCleanerNet45
                     MakeCellsGrey(worksheet, i, col);
                 }
             }
+
+
+            //Sometimes there are empty columns after the table that get colored by this function.
+            //we will delete those columns
+            DeleteColumnsAtEndOfWorksheet(worksheet);
+        }
+
+
+
+
+        /// <summary>
+        /// Some worksheets (like ReportAccountBalances) have empty columns at their right side, which get 
+        /// colored in by the EnsureAlternatingColors function. It looks cleaner if they are removed.
+        /// </summary>
+        /// <param name="worksheet"></param>
+        private static void DeleteColumnsAtEndOfWorksheet(ExcelWorksheet worksheet)
+        {
+            for (int col = worksheet.Dimension.End.Column; col >= 1; col--)
+            {
+                if (ColumnIsEmpty(worksheet, col))
+                {
+                    worksheet.DeleteColumn(col);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Checks if the specified column is empty (contains no cells with text)
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="columnNumber">the column being checked</param>
+        /// <returns>true if the column has no cells with text, and false otherwise</returns>
+        private static bool ColumnIsEmpty(ExcelWorksheet worksheet, int columnNumber)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet, 1, columnNumber);
+
+            return iter.GetCells(ExcelIterator.SHIFT_DOWN).All(cell => FormulaManager.IsEmptyCell(cell));
         }
 
 

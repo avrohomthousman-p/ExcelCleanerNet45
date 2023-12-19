@@ -105,7 +105,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\CCTransactionsReport.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportTenantSummary.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\UnitInvoiceReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\SecurityReport.xlsx
+                // C:\Users\avroh\Downloads\VendorPropertyReport.xlsx
 
 
 

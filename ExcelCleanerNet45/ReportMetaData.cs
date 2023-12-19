@@ -50,8 +50,29 @@ namespace ExcelCleanerNet45
 
 
 
-                case "BalanceSheetDrillthrough":
+                case "VendorPropertyReport":
                     AbstractMergeCleaner m = new BackupMergeCleaner();
+
+                    //ensure each column isnt small enough to hide any data
+                    m.AddCleanupJob(worksheet => {
+                        for(int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                        {
+                            var column = worksheet.Column(col);
+                            
+                            if(column.Width < 1.5)
+                            {
+                                column.Width = 1.5;
+                            }
+                        }
+                    });
+
+
+                    return m;
+
+
+
+                case "BalanceSheetDrillthrough":
+                    m = new BackupMergeCleaner();
 
                     //Make sure all data cells in the data column have the correct alignment
                     m.AddCleanupJob(worksheet => 

@@ -42,7 +42,7 @@ namespace ExcelCleanerNet45.GeneralCleaning
         /// <param name="worksheet">the worksheet in need of realignment</param>
         internal static void RealignDataColumn(ExcelWorksheet worksheet)
         {
-            //find the top of the column
+            //move the iterator to the top of the column
             ExcelIterator iter = new ExcelIterator(worksheet);
             ExcelRange temp = iter.GetFirstMatchingCell(cell => FormulaManager.IsDollarValue(cell));
             if (temp == null)
@@ -82,13 +82,28 @@ namespace ExcelCleanerNet45.GeneralCleaning
         /// <param name="desiredAlignment">the alignment to be assigned to the header</param>
         internal static void RealignSingleHeader(ExcelWorksheet worksheet, string headerText, ExcelHorizontalAlignment desiredAlignment)
         {
-            ExcelIterator iter = new ExcelIterator(worksheet);
-            ExcelRange cell = iter.GetFirstMatchingCell(c => c.Text.Trim() == headerText);
+            ExcelRange cell = GetCellWithText(worksheet, headerText);
             if (cell != null)
             {
                 cell.Style.HorizontalAlignment = desiredAlignment;
             }
         }
+
+
+
+
+        /// <summary>
+        /// Gets the first cell in the worksheet that has the desired text in it, or null if no such text is found
+        /// </summary>
+        /// <param name="worksheet">the worksheet being checked</param>
+        /// <param name="targetText">the text the desired cell has</param>
+        /// <returns>the row and column of the first cell containing the desired text, or null if no cell is found</returns>
+        internal static ExcelRange GetCellWithText(ExcelWorksheet worksheet, string targetText)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            return iter.GetFirstMatchingCell(cell => cell.Text.Trim() == targetText);
+        }
+
 
 
 
@@ -99,15 +114,14 @@ namespace ExcelCleanerNet45.GeneralCleaning
         /// <param name="columnHeader">the literal text found at the header of that column</param>
         internal static void SetColumnToWrapText(ExcelWorksheet worksheet, string columnHeader)
         {
-            ExcelIterator iter = new ExcelIterator(worksheet);
-            var topOfColumn = iter.GetFirstMatchingCell(cell => cell.Text.Trim() == columnHeader);
+            var topOfColumn = GetCellWithText(worksheet, columnHeader);
             if (topOfColumn == null) //if no such column exists
             {
                 return;
             }
 
 
-            SetColumnToWrapText(worksheet, topOfColumn.End.Row + 1, topOfColumn.Start.Column);
+            SetColumnToWrapText(worksheet, topOfColumn.Start.Row + 1, topOfColumn.Start.Column);
         }
 
 

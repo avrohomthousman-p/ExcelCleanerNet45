@@ -55,15 +55,7 @@ namespace ExcelCleanerNet45
 
                     //ensure each column isnt small enough to hide any data
                     m.AddCleanupJob(worksheet => {
-                        for(int col = 1; col <= worksheet.Dimension.End.Column; col++)
-                        {
-                            var column = worksheet.Column(col);
-                            
-                            if(column.Width < 1.5)
-                            {
-                                column.Width = 1.5;
-                            }
-                        }
+                        AdditionalCleanupJobs.SetColumnsToMinimumWidth(worksheet, 1.5);
                     });
 
 
@@ -75,29 +67,7 @@ namespace ExcelCleanerNet45
                     m = new BackupMergeCleaner();
 
                     //Make sure all data cells in the data column have the correct alignment
-                    m.AddCleanupJob(worksheet => 
-                    {
-                        ExcelIterator iter = new ExcelIterator(worksheet);
-                        iter.GetFirstMatchingCell(cell => FormulaManager.IsDollarValue(cell));
-
-                        ExcelIterator copy = new ExcelIterator(iter);
-
-
-                        var mostCommonAlignment = iter.GetCells(ExcelIterator.SHIFT_DOWN)
-                                                    .GroupBy(cell => cell.Style.HorizontalAlignment)
-                                                    .OrderByDescending(group => group.Count())
-                                                    .FirstOrDefault().Key;
-
-
-                        var dataCells = copy.GetCells(ExcelIterator.SHIFT_DOWN)
-                                            .Where(cell => FormulaManager.IsDollarValue(cell));
-
-                        foreach(ExcelRange cell in dataCells)
-                        {
-                            cell.Style.HorizontalAlignment = mostCommonAlignment;
-                        }
-                        
-                    });
+                    m.AddCleanupJob(AdditionalCleanupJobs.RealignDataColumn);
 
                     return m;
 
@@ -139,16 +109,12 @@ namespace ExcelCleanerNet45
                 case "ProfitAndLossStatementByPeriod":
                 case "ProfitAndLossComp":
                     m = new PrimaryMergeCleaner();
+
+                    //Header with text Cash Basis is often not aligned correctly
                     m.AddCleanupJob(worksheet => 
                     {
-                        //Header with text Cash Basis is often not aligned correctly
-
-                        ExcelIterator iter = new ExcelIterator(worksheet);
-                        ExcelRange cell = iter.GetFirstMatchingCell(c => c.Text.Trim() == "Cash Basis");
-                        if(cell != null)
-                        {
-                            cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
-                        }
+                        AdditionalCleanupJobs.RealignSingleHeader(worksheet, "Cash Basis",
+                                                OfficeOpenXml.Style.ExcelHorizontalAlignment.Left);
                     });
 
 
@@ -223,22 +189,7 @@ namespace ExcelCleanerNet45
                     m = new PrimaryMergeCleaner();
 
                     m.AddCleanupJob(worksheet => {
-                        ExcelIterator iter = new ExcelIterator(worksheet);
-                        var topOfColumn = iter.GetFirstMatchingCell(cell => cell.Text.Trim() == "Journal Account");
-                        if(topOfColumn == null) //if no such column exists
-                        {
-                            return;
-                        }
-
-                        iter.SkipRow();
-
-                        var cells = iter.GetCells(ExcelIterator.SHIFT_DOWN);
-
-                        foreach (ExcelRange cell in cells)
-                        {
-                            cell.Style.WrapText = true;
-                        }
-
+                        AdditionalCleanupJobs.SetColumnToWrapText(worksheet, "Journal Account");
                     });
 
                     return m;

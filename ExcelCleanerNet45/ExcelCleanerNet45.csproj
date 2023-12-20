@@ -82,6 +82,7 @@
     <Compile Include="FormulaGeneration\SumOtherSums.cs" />
     <Compile Include="FormulaGeneration\SumWithinSegmentGenerator.cs" />
     <Compile Include="GeneralCleaning\AbstractMergeCleaner.cs" />
+    <Compile Include="GeneralCleaning\AdditionalCleanupJobs.cs" />
     <Compile Include="GeneralCleaning\BackupMergeCleaner.cs" />
     <Compile Include="GeneralCleaning\ExtendedVarianceCleaner.cs" />
     <Compile Include="GeneralCleaning\FileCleaner.cs" />

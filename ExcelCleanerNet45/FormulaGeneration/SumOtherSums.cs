@@ -20,7 +20,7 @@ namespace ExcelCleanerNet45.FormulaGeneration
         public SumOtherSums()
         {
             //in this version we override the defualt behavior set in the superclass
-            this.beyondFormulaRange = new IsBeyondFormulaRange(cell => !FormulaManager.IsEmptyCell(cell) && !isDataCell(cell));
+            base.beyondFormulaRange = new IsBeyondFormulaRange(cell => !FormulaManager.IsEmptyCell(cell) && !isDataCell(cell));
         }
 
 

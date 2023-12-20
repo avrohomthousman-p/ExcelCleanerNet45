@@ -218,6 +218,33 @@ namespace ExcelCleanerNet45
                     return m;
 
 
+                    
+                case "VendorInvoiceReportWithJournalAccounts":
+                    m = new PrimaryMergeCleaner();
+
+                    m.AddCleanupJob(worksheet => {
+                        ExcelIterator iter = new ExcelIterator(worksheet);
+                        var topOfColumn = iter.GetFirstMatchingCell(cell => cell.Text.Trim() == "Journal Account");
+                        if(topOfColumn == null) //if no such column exists
+                        {
+                            return;
+                        }
+
+                        iter.SkipRow();
+
+                        var cells = iter.GetCells(ExcelIterator.SHIFT_DOWN);
+
+                        foreach (ExcelRange cell in cells)
+                        {
+                            cell.Style.WrapText = true;
+                        }
+
+                    });
+
+                    return m;
+
+
+
 
                 case "Budget":
                     return new ReAlignDataCells();
@@ -354,13 +381,40 @@ namespace ExcelCleanerNet45
 
 
                 case "VendorInvoiceReportWithJournalAccounts":
-                    switch (worksheetNum)
+                    IFormulaGenerator generatorToBeUsed = null;
+
+                    var worksheetType = MetaDataGathering.DetectWorksheetType(workbook.Worksheets[worksheetNum]);
+
+
+                    switch (worksheetType)
                     {
-                        case 5:
-                            return new FullTableFormulaGenerator();
+                        case MetaDataGathering.VendorInvoiceReportWithJAType.BLANK:
+                            return null;
+
+                        case MetaDataGathering.VendorInvoiceReportWithJAType.STANDARD:
+                            generatorToBeUsed = new VendorInvoiceReportFormulas();
+                            break;
+
+                        case MetaDataGathering.VendorInvoiceReportWithJAType.CHART:
+                            generatorToBeUsed = new FullTableFormulaGenerator();
+                            break;
+
+
                         default:
-                            return new VendorInvoiceReportFormulas();
+                            Console.WriteLine($"Error: worksheet structure unrecongnized. Unable to add formulas to worksheet {worksheetNum + 1}");
+                            Console.WriteLine("You may be able to fix this by finding the appropriate formula generator for this worksheet.");
+                            return null;
                     }
+
+
+                    //we need to set the BeyondFormulRange of SumOtherSums to allow "invoice Total:"
+                    SumOtherSums sumOfSums = new SumOtherSums();
+                    sumOfSums.SetDefenitionForBeyondFormulaRange(cell => !FormulaManager.IsEmptyCell(cell) 
+                                                                        && !FormulaManager.IsDollarValue(cell) 
+                                                                        && cell.Text.Trim() != "Invoice Total:");
+
+                    return new MultiFormulaGenerator(new PeriodicFormulasOnTop(), generatorToBeUsed, sumOfSums);
+
 
 
 
@@ -777,13 +831,19 @@ namespace ExcelCleanerNet45
 
 
                 case "VendorInvoiceReportWithJournalAccounts":
-                    switch (worksheetNum)
+                    var worksheetType = MetaDataGathering.DetectWorksheetType(workbook.Worksheets[worksheetNum]);
+
+                    switch (worksheetType)
                     {
-                        case 5:
-                            return new string[] { "Total:" };
+                        case MetaDataGathering.VendorInvoiceReportWithJAType.STANDARD:
+                            return new string[] { "1Amount Owed", "1Amount Paid", "1Balance",
+                                                "2Amount Owed", "2Amount Paid", "2Balance", "3Total:" };
+
+                        case MetaDataGathering.VendorInvoiceReportWithJAType.CHART:
+                            return new string[] { "1Amount Owed", "1Amount Paid", "1Balance", "2Total:", "3Total:" };
 
                         default:
-                            return new string[] { "Amount Owed", "Amount Paid", "Balance" };
+                            return new string[0];
                     }
 
 

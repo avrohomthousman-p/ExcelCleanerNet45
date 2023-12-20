@@ -1,4 +1,5 @@
 ﻿using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -264,6 +265,135 @@ namespace ExcelCleanerNet45.FormulaGeneration
                 return new string[] { headerCell.Text.Trim() };
             }
         }
+
+
+        #endregion
+
+
+
+        #region VendorInvoiceReportWithJournalAccounts
+
+        /// <summary>
+        /// Represents the type of worksheet in VendorInvoiceReportWithJournalAccounts 
+        /// </summary>
+        internal enum VendorInvoiceReportWithJAType { UNKNOWN_TYPE, STANDARD, BLANK, CHART }
+
+
+
+        /// <summary>
+        /// VendorInvoiceReportWithJournalAccounts has different kinds of worksheets in it, which need
+        /// different string arguments and different FormulaGenerators. This function checks what the worksheet needs.
+        /// </summary>
+        /// <param name="worksheet">the worksheet that needs formulas</param>
+        /// <returns></returns>
+        internal static VendorInvoiceReportWithJAType DetectWorksheetType(ExcelWorksheet worksheet)
+        {
+            if (IsStandardWorksheet(worksheet))
+            {
+                return VendorInvoiceReportWithJAType.STANDARD;
+            }
+
+            if (IsBlankWorksheet(worksheet))
+            {
+                return VendorInvoiceReportWithJAType.BLANK;
+            }
+
+            if (WorksheetHasChart(worksheet))
+            {
+                return VendorInvoiceReportWithJAType.CHART;
+            }
+
+
+            /*  ADD NEW TYPES OF WORKSHEETS FOR THIS REPORT HERE  */
+
+
+            return VendorInvoiceReportWithJAType.UNKNOWN_TYPE;
+        }
+
+
+
+        /// <summary>
+        /// Checks if the specified worksheet is a standard worksheet for this report.
+        /// 
+        /// If the report has thre adjacent cells at the top with the text "Amount Owed", "Amount Paid", and
+        /// "Balance" it is assumed to be a standard worksheet.
+        /// </summary>
+        /// <param name="worksheet">the worksheet in need of formulas</param>
+        /// <returns>true if the worksheet is the standard kind of worksheet for this report, and false otherwise</returns>
+        private static bool IsStandardWorksheet(ExcelWorksheet worksheet)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            ExcelRange cell = iter.GetFirstMatchingCell(c => c.Text.Trim() == "Amount Owed");
+            if (cell == null)
+            {
+                return false;
+            }
+
+
+            iter.SkipColumn();
+            cell = iter.GetCurrentCell();
+            if(cell == null || cell.Text.Trim() != "Amount Paid")
+            {
+                return false;
+            }
+
+
+            iter.SkipColumn();
+            cell = iter.GetCurrentCell();
+            if (cell == null || cell.Text.Trim() != "Balance")
+            {
+                return false;
+            }
+
+
+            return true;
+        }
+
+
+
+        /// <summary>
+        /// Checks if the worksheet is blank: i.e. it has not data in it (it might have some headers).
+        /// </summary>
+        /// <param name="worksheet">the worksheet in need of formulas</param>
+        /// <returns>true if the worksheet has no data and false otherwise</returns>
+        private static bool IsBlankWorksheet(ExcelWorksheet worksheet)
+        {
+            if(worksheet.Dimension == null)
+            {
+                return true;
+            }
+
+
+            ExcelIterator iter = new ExcelIterator(worksheet);
+
+            return !iter.FindAllCells().Any(cell => FormulaManager.IsDollarValue(cell));
+        }
+
+
+
+        /// <summary>
+        /// Checks if the worksheet is the king of worksheet that has a chart in it.
+        /// </summary>
+        /// <param name="worksheet">the worksheet in need of formulas</param>
+        /// <returns>true if the worksheet has a chart in it and false otherwise</returns>
+        private static bool WorksheetHasChart(ExcelWorksheet worksheet)
+        {
+            //current implemenatation: find the first cell with a dollar value and see if it 
+            //has any borders
+
+
+            ExcelIterator iter = new ExcelIterator(worksheet);
+
+            ExcelRange firstDataCell = iter.GetFirstMatchingCell(cell => FormulaManager.IsDollarValue(cell));
+
+            var borderStyle = firstDataCell.Style.Border;
+
+            return borderStyle.Top.Style != ExcelBorderStyle.None 
+                || borderStyle.Bottom.Style != ExcelBorderStyle.None
+                || borderStyle.Right.Style != ExcelBorderStyle.None
+                || borderStyle.Left.Style != ExcelBorderStyle.None;
+        }
+
 
 
         #endregion

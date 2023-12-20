@@ -33,11 +33,6 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
             firstDataRow = FindFirstDataRow(worksheet);
 
             AddFormulasForInvoiceTotals(worksheet);
-
-            foreach(string header in headers)
-            {
-                AddSummaryFormulas(worksheet, header);
-            }
         }
 
 
@@ -200,67 +195,6 @@ namespace ExcelCleanerNet45.FormulaGeneration.ReportSpecificGenerators
 
             return "SUM(" + cell.Address + ")";
         }
-
-
-
-        /// <summary>
-        /// Adds summary formulas to the worksheet
-        /// </summary>
-        /// <param name="worksheet">the worksheet in need of formulas</param>
-        /// <param name="header">the header we are looking for</param>
-        private void AddSummaryFormulas(ExcelWorksheet worksheet, string header)
-        {
-            ExcelIterator iter = new ExcelIterator(worksheet);
-            ExcelRange topCell = iter.GetFirstMatchingCell(c => FormulaManager.TextMatches(c.Text, header));
-            int col = topCell.Start.Column;
-
-            ExcelRange topSummaryCell = worksheet.Cells[topCell.End.Row + 1, col];
-            ExcelRange bottomSummaryCell = worksheet.Cells[worksheet.Dimension.End.Row, col];
-
-            string formula = BuildSummaryFormula(worksheet, col);
-
-            topSummaryCell.Formula = formula;
-            topSummaryCell.Style.Locked = true;
-
-            bottomSummaryCell.Formula = formula;
-            bottomSummaryCell.Style.Locked = true;
-
-        }
-
-
-
-        /// <summary>
-        /// Builds a formula for the summary cells in the report
-        /// </summary>
-        /// <param name="worksheet">the worksheet in need of formulas</param>
-        /// <param name="col">the column number the formula should cover</param>
-        /// <returns>a string containing the excel formula needed</returns>
-        private string BuildSummaryFormula(ExcelWorksheet worksheet, int col)
-        {
-            ExcelIterator iter = new ExcelIterator(worksheet, firstDataRow, col);
-            StringBuilder formula = new StringBuilder("SUM(");
-            foreach (ExcelRange cell in iter.GetCells(ExcelIterator.SHIFT_DOWN))
-            {
-                //skip the last row
-                if (iter.GetCurrentRow() == worksheet.Dimension.End.Row - 1)
-                {
-                    break;
-                }
-
-                if (!FormulaManager.CellHasFormula(cell) && (FormulaManager.IsDollarValue(cell) || FormulaManager.IsEmptyCell(cell)))
-                {
-                    formula.Append(cell.Address);
-                    formula.Append(",");
-                }
-            }
-
-
-            formula.Remove(formula.Length - 1, 1);
-            formula.Append(")");
-
-            return formula.ToString();
-        }
-
     }
 
 }

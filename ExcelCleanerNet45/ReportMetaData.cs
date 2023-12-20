@@ -197,6 +197,20 @@ namespace ExcelCleanerNet45
 
 
 
+                case "VendorInvoiceReport":
+                    m = new PrimaryMergeCleaner();
+
+                    m.AddCleanupJob(worksheet => {
+                        ExcelRange topOfColumn = AdditionalCleanupJobs.GetCellWithText(worksheet, "Description");
+                        AdditionalCleanupJobs.SetColumnToWrapText(worksheet, topOfColumn.End.Row + 1, topOfColumn.Start.Column);
+                        AdditionalCleanupJobs.ResizeColumnAndDeleteTheNext2(worksheet, topOfColumn.Start.Column);
+                    });
+
+                    return m;
+
+
+
+
                 case "Budget":
                     return new ReAlignDataCells();
 

@@ -144,5 +144,62 @@ namespace ExcelCleanerNet45.GeneralCleaning
                 cell.Style.WrapText = true;
             }
         }
+
+
+
+
+        /// <summary>
+        /// Sets the size of the specified column to the size of itself plus the next two columns, 
+        /// and then deletes those next two columns.
+        /// 
+        /// 
+        /// This is useful for the VendorInvoiceReport which has 2 extra columns that need to be deleted
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="column">the column that will be resized</param>
+        internal static void ResizeColumnAndDeleteTheNext2(ExcelWorksheet worksheet, int column)
+        {
+            double totalSize = worksheet.Column(column).Width;
+
+            
+
+            if (SafeToDeleteColumn(worksheet, column + 1))
+            {
+                totalSize += worksheet.Column(column + 1).Width;
+                worksheet.DeleteColumn(column + 1);
+            }
+            if (SafeToDeleteColumn(worksheet, column + 1))
+            {
+                totalSize += worksheet.Column(column + 1).Width;
+                worksheet.DeleteColumn(column + 1);
+            }
+
+
+            worksheet.Column(column).Width = totalSize;
+        }
+
+
+
+
+
+        /// <summary>
+        /// Checks if a column is safe to delete becuase it is empty other than possibly having major headers in it.
+        /// </summary>
+        /// <param name="worksheet">the worksheet where the column can be found</param>
+        /// <param name="col">the column being checked</param>
+        /// <returns>true if it is safe to delete the column and false if deleting it would result in data loss</returns>
+        internal static bool SafeToDeleteColumn(ExcelWorksheet worksheet, int col)
+        {
+            for (int row = 1; row <= worksheet.Dimension.End.Row; row++)
+            {
+                if (!FormulaManager.IsEmptyCell(worksheet.Cells[row, col]))
+                {
+                    return false;
+                }
+            }
+
+
+            return true;
+        }
     }
 }

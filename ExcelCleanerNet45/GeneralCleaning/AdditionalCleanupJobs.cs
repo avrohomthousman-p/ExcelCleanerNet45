@@ -201,5 +201,94 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
             return true;
         }
+
+
+
+
+        /// <summary>
+        /// Deletes all empty cells in the DistributionsReport
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="topHeader">the header signaling the first row that needs cells deleted</param>
+        /// <param name="bottomHeader">the header signaling the last row the has cells that need to be deleted</param>
+        internal static void DeleteEmptyCellsForDistributionsReport(ExcelWorksheet worksheet, string topHeader, string bottomHeader)
+        {
+            //Find top row
+            var topCell = GetCellWithText(worksheet, topHeader);
+            if(topCell == null)
+            {
+                Console.WriteLine("no top cell found");
+                return;
+            }
+
+            int topRow = topCell.Start.Row;
+
+
+            //Find bottom row
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            Tuple<int, int> bottomCell = iter
+                            .FindAllMatchingCoordinates(c => FormulaManager.TextMatches(c.Text, bottomHeader))
+                            .LastOrDefault();
+
+
+            if(bottomCell == null)
+            {
+                Console.WriteLine("no bottom found");
+                return;
+            }
+
+
+            if(!AllCellsAreEmpty(worksheet, topRow, bottomCell.Item1, bottomCell.Item2))
+            {
+                Console.WriteLine("thats not empty");
+                return;
+            }
+
+
+            //delete the cells
+            ExcelRange cell;
+            for(int i = topRow; i < bottomCell.Item1; i++)
+            {
+                cell = worksheet.Cells[i, bottomCell.Item2];
+                cell.Delete(eShiftTypeDelete.Left);
+            }
+
+
+            //also delete cell to the right and left of the bottom cell to better align the summary
+            cell = worksheet.Cells[bottomCell.Item1, bottomCell.Item2 + 1];
+            cell.Delete(eShiftTypeDelete.Left);
+            cell = worksheet.Cells[bottomCell.Item1, bottomCell.Item2 - 1];
+            cell.Delete(eShiftTypeDelete.Left);
+        }
+
+
+
+        /// <summary>
+        /// Checks if all cells in the specified column and between the specified top and bottom
+        /// are empty
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="top">the top row to be checked (inclusive)</param>
+        /// <param name="bottom">the bottom row to be checked (exclusive)</param>
+        /// <param name="col">the column to be checked</param>
+        /// <returns></returns>
+        private static bool AllCellsAreEmpty(ExcelWorksheet worksheet, int top, int bottom, int col)
+        {
+            ExcelRange cell;
+
+            bool allEmpty = true;
+            for(int i = top; i < bottom; i++)
+            {
+                cell = worksheet.Cells[i, col];
+
+                if (!FormulaManager.IsEmptyCell(cell))
+                {
+                    allEmpty = false;
+                    break;
+                }
+            }
+
+            return allEmpty;
+        }
     }
 }

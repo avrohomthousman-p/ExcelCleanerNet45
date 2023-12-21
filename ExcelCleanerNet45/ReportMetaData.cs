@@ -211,6 +211,17 @@ namespace ExcelCleanerNet45
 
 
 
+                case "DistributionsReport":
+                    m = new PrimaryMergeCleaner();
+                    m.AddCleanupJob(worksheet => {
+                        AdditionalCleanupJobs.DeleteEmptyCellsForDistributionsReport(worksheet, "Distribution", "\\d+ Distribution(s)?");
+                    });
+
+                    return m;
+
+
+
+
                 case "Budget":
                     return new ReAlignDataCells();
 

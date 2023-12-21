@@ -290,5 +290,92 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
             return allEmpty;
         }
+
+
+
+        /// <summary>
+        /// Sets all columns in the worksheet to wrap their text to the next line.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="numCellsInFirstRow">the number of cells to expect in the first data row</param>
+        internal static void SetAllColumnsToWrapText(ExcelWorksheet worksheet)
+        {
+            int firstRow = FindFirstRowWithMultipleEntries(worksheet, 4);
+            if(firstRow == -1)
+            {
+                return;
+            }
+
+            SetAllColumnsToWrapText(worksheet, firstRow);
+        }
+
+
+
+        /// <summary>
+        /// Sets all the columns in the worksheet to wrp the text to the next line
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="firstDataRow">the topmost row that should be set to wrap its text</param>
+        internal static void SetAllColumnsToWrapText(ExcelWorksheet worksheet, int firstDataRow)
+        {
+            for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+            {
+                SetColumnToWrapText(worksheet, firstDataRow, col);
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Finds the first row in the worksheet that has a number of non empty cells greater than or equal to 
+        /// the passed in number of required entries.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="numRequiredEntries">the number of non empty cells a row must have</param>
+        /// <returns>the row number of the first row with sufficent entries, or -1 if no such cell is found</returns>
+        internal static int FindFirstRowWithMultipleEntries(ExcelWorksheet worksheet, int numRequiredEntries)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            for(int i = 1; i <= worksheet.Dimension.End.Row; i++)
+            {
+                iter.SetCurrentLocation(i, 1);
+
+                int nonEmptyCells = iter.GetCells(ExcelIterator.SHIFT_RIGHT)
+                                        .Count(cell => !FormulaManager.IsEmptyCell(cell));
+
+
+                if(nonEmptyCells >= numRequiredEntries)
+                {
+                    return i;
+                }
+            }
+
+
+            return -1;
+        }
+
+
+
+
+        /// <summary>
+        /// Fixes the misaligned summary cells at the bottom of the InvoiceList report
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        internal static void FixSummariesOfInvoiceList(ExcelWorksheet worksheet)
+        {
+            //Deletes some empty cells to move the data cells to where they should be
+
+            worksheet.DeleteRow(worksheet.Dimension.End.Row);
+            ExcelRange cell = worksheet.Cells[worksheet.Dimension.End.Row - 1, worksheet.Dimension.End.Column - 3, 
+                                                worksheet.Dimension.End.Row - 1, worksheet.Dimension.End.Column - 1];
+
+            cell.Delete(eShiftTypeDelete.Up);
+
+
+            worksheet.DeleteRow(worksheet.Dimension.End.Row);
+            cell = worksheet.Cells[worksheet.Dimension.End.Row, worksheet.Dimension.End.Column - 1];
+            cell.Delete(eShiftTypeDelete.Left);
+        }
     }
 }

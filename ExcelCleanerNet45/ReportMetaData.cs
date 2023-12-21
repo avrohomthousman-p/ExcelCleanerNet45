@@ -221,9 +221,24 @@ namespace ExcelCleanerNet45
 
 
 
+                case "PropertyReport":
+                    m = new PrimaryMergeCleaner();
+
+                    m.AddCleanupJob(AdditionalCleanupJobs.SetAllColumnsToWrapText);
+
+                    return m;
+
+
 
                 case "Budget":
                     return new ReAlignDataCells();
+
+
+
+                case "InvoiceList":
+                    m = new PrimaryMergeCleaner();
+                    m.AddCleanupJob(AdditionalCleanupJobs.FixSummariesOfInvoiceList);
+                    return m;
 
 
 

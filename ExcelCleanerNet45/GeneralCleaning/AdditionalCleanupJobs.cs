@@ -377,5 +377,26 @@ namespace ExcelCleanerNet45.GeneralCleaning
             cell = worksheet.Cells[worksheet.Dimension.End.Row, worksheet.Dimension.End.Column - 1];
             cell.Delete(eShiftTypeDelete.Left);
         }
+
+
+
+        /// <summary>
+        /// Widens most of the columns in the ReportTenantSummary
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        internal static void SetColumnWidthsForReportTenantSummary(ExcelWorksheet worksheet)
+        {
+            const double DEFAULT_WIDTH = 12;
+            ExcelColumn col;
+
+            for (int i = 4; i <= worksheet.Dimension.End.Column; i++)
+            {
+                col = worksheet.Column(i);
+                if (col.Width < DEFAULT_WIDTH)
+                {
+                    col.Width = DEFAULT_WIDTH;
+                }
+            }
+        }
     }
 }

@@ -42,15 +42,22 @@ namespace ExcelCleanerNet45
                 case "TrialBalance":
                 case "TrialBalanceVariance":
                 case "CashFlow":
-                case "ReportTenantSummary":
                 case "UnitInfoReport":
                 case "ReportCashReceiptsSummary":
                     return new BackupMergeCleaner();
 
 
 
+
+                case "ReportTenantSummary":
+                    AbstractMergeCleaner m = new BackupMergeCleaner();    
+                    m.AddCleanupJob(AdditionalCleanupJobs.SetColumnWidthsForReportTenantSummary);
+                    return m;
+
+
+
                 case "VendorPropertyReport":
-                    AbstractMergeCleaner m = new BackupMergeCleaner();
+                    m = new BackupMergeCleaner();
 
                     //ensure each column isnt small enough to hide any data
                     m.AddCleanupJob(worksheet => {

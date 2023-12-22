@@ -103,7 +103,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\LedgerReport.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\BalanceSheetDrillthrough.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\CCTransactionsReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\InvoiceList.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\InvoiceDetail.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\UnitInvoiceReport.xlsx
                 // C:\Users\avroh\Downloads\PropertyReport.xlsx
 

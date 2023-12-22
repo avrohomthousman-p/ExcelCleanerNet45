@@ -42,7 +42,6 @@ namespace ExcelCleanerNet45
                 case "TrialBalance":
                 case "TrialBalanceVariance":
                 case "CashFlow":
-                case "InvoiceDetail":
                 case "ReportTenantSummary":
                 case "UnitInfoReport":
                 case "ReportCashReceiptsSummary":
@@ -119,6 +118,23 @@ namespace ExcelCleanerNet45
 
 
                     return m;
+
+
+
+                case "InvoiceDetail":
+                    m = new BackupMergeCleaner();
+
+                    //Header with text Cash Basis is often not aligned correctly
+                    m.AddCleanupJob(worksheet =>
+                    {
+                        AdditionalCleanupJobs.RealignSingleHeader(worksheet, "Payments",
+                                                OfficeOpenXml.Style.ExcelHorizontalAlignment.Left);
+                    });
+
+
+                    return m;
+
+
 
 
                 case "ProfitAndLossExtendedVariance":

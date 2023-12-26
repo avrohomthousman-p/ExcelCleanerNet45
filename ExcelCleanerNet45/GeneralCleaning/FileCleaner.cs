@@ -21,11 +21,12 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="sourceFile">the excel file in byte form</param>
         /// <param name="reportName">the file name of the original excel file</param>
+        /// <param name="reportVersion">special text that signals the version of the report. If there is only one version, null or an empty string should be passed in</param>
         /// <param name="addFormulas">should be true if you also want formulas added to the report</param>
         /// <return>the excel file in byte form</return>
-        public static byte[] OpenXLSX(byte[] sourceFile, string reportName, bool addFormulas=false)
+        public static byte[] OpenXLSX(byte[] sourceFile, string reportName, string reportVersion, bool addFormulas=false)
         {
-
+            
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 
@@ -46,14 +47,14 @@ namespace ExcelCleanerNet45
                         continue;
                     }
 
-                    CleanWorksheet(worksheet, reportName);
+                    CleanWorksheet(worksheet, reportName, reportVersion);
                 }
 
 
                 byte[] results;
                 if (addFormulas)
                 {
-                    results = FormulaManager.AddFormulas(package.GetAsByteArray(), reportName);
+                    results = FormulaManager.AddFormulas(package.GetAsByteArray(), reportName, reportVersion);
                 }
                 else
                 {
@@ -77,7 +78,8 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="worksheet">the worksheet to be cleaned</param>
         /// <param name="reportName">the name of the report we are working on</param>
-        public static void CleanWorksheet(ExcelWorksheet worksheet, string reportName)
+        /// <param name="reportVersion">the version of the report being unmerged. Null or empty if only one version exists</param>
+        public static void CleanWorksheet(ExcelWorksheet worksheet, string reportName, string reportVersion)
         {
 
             DeleteHiddenRows(worksheet);
@@ -86,7 +88,7 @@ namespace ExcelCleanerNet45
             RemoveAllHyperLinks(worksheet);
 
 
-            RemoveAllMerges(worksheet, reportName);
+            RemoveAllMerges(worksheet, reportName, reportVersion);
 
 
             UnGroupAllRows(worksheet);
@@ -95,7 +97,7 @@ namespace ExcelCleanerNet45
             CorrectCellDataTypes(worksheet);
 
 
-            DoAdditionalCleanup(worksheet, reportName);
+            DoAdditionalCleanup(worksheet, reportName, reportVersion);
 
         }
 
@@ -212,10 +214,11 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="worksheet">the worksheet whose cells must be unmerged</param>
         /// <param name="reportName">the name of the type of report being cleaned</param>
-        private static void RemoveAllMerges(ExcelWorksheet worksheet, string reportName)
+        /// <param name="reportVersion">the version of the report being unmerged. Null or empty if only one version exists</param>
+        private static void RemoveAllMerges(ExcelWorksheet worksheet, string reportName, string reportVersion)
         {
 
-            IMergeCleaner mergeCleaner = ReportMetaData.ChoosesCleanupSystem(reportName, worksheet.Index);
+            IMergeCleaner mergeCleaner = ReportMetaData.ChoosesCleanupSystem(reportName, reportVersion, worksheet.Index);
 
             try
             {
@@ -518,9 +521,10 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="worksheet">the worksheet that is being cleaned</param>
         /// <param name="reportName">the report that is being cleaned</param>
-        private static void DoAdditionalCleanup(ExcelWorksheet worksheet, string reportName)
+        /// <param name="reportVersion">the version of the report being unmerged. Null or empty if only one version exists</param>
+        private static void DoAdditionalCleanup(ExcelWorksheet worksheet, string reportName, string reportVersion)
         {
-            if(ReportMetaData.NeedsSummaryCellsMoved(reportName, worksheet.Index))
+            if(ReportMetaData.NeedsSummaryCellsMoved(reportName, reportVersion, worksheet.Index))
             {
                 MoveOutOfPlaceSummaryCells(worksheet);
             }

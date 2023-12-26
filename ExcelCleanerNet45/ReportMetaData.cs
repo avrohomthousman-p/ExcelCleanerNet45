@@ -31,12 +31,13 @@ namespace ExcelCleanerNet45
         /// <summary>
         /// Factory method for choosing a version of the merge cleanup code that would work best for the specified report
         /// </summary>
-        /// <param name="reportType">the type of report that needs unmerging</param>
+        /// <param name="reportName">the name of the report that needs unmerging</param>
+        /// <param name="reportVersion">teh version of the report being unmerged. Null or empty if only one version exists</param>
         /// <param name="worksheetNumber">the worksheet withing the report that needs unmerging</param>
         /// <returns>an instance of IMergeCleaner that should be used to clean the specified worksheet</returns>
-        internal static IMergeCleaner ChoosesCleanupSystem(string reportType, int worksheetNumber)
+        internal static IMergeCleaner ChoosesCleanupSystem(string reportName, string reportVersion, int worksheetNumber)
         {
-            switch (reportType)
+            switch (reportName)
             {
                 case "SummaryReport":
                 case "TrialBalance":
@@ -286,9 +287,10 @@ namespace ExcelCleanerNet45
         /// to the right.
         /// </summary>
         /// <param name="reportName">the name of the report the worksheet is from</param>
+        /// <param name="reportVersion">teh version of the report being unmerged. Null or empty if only one version exists</param>
         /// <param name="worksheetIndex">the zero based index of the worksheet</param>
         /// <returns>true if the worksheets needs its summary cells moved, and false otherwise</returns>
-        internal static bool NeedsSummaryCellsMoved(string reportName, int worksheetIndex)
+        internal static bool NeedsSummaryCellsMoved(string reportName, string reportVersion, int worksheetIndex)
         {
             switch (reportName)
             {
@@ -313,11 +315,12 @@ namespace ExcelCleanerNet45
         /// <param name="reportName">the name of the report that needs formulas</param>
         /// <param name="worksheetNum">the index of the worksheet that needs formulas</param>
         /// <param name="workbook">the full workbook we are in. Sometimes needed to check on how many worksheets there are</param>
+        /// <param name="reportVersion">teh version of the report being unmerged. Null or empty if only one version exists</param>
         /// <returns>
         /// an implemenation of the IFormulaGenerator interface that should be used to add the formulas,
         /// or null if the worksheet doesnt need formulas
         /// </returns>
-        internal static IFormulaGenerator ChooseFormulaGenerator(string reportName, int worksheetNum, ExcelWorkbook workbook)
+        internal static IFormulaGenerator ChooseFormulaGenerator(string reportName, int worksheetNum, ExcelWorkbook workbook, string reportVersion)
         {
 
             FullTableFormulaGenerator formulaGenerator;
@@ -691,11 +694,12 @@ namespace ExcelCleanerNet45
         /// <param name="reportName">the name of the report getting the formulas</param>
         /// <param name="worksheetNum">the index of the worksheet getting the formulas</param>
         /// <param name="workbook">The workbook being given formulas. Sometimes needed to tell how many worksheets there are</param>
+        /// <param name="reportVersion">teh version of the report being unmerged. Null or empty if only one version exists</param>
         /// <returns>
         /// a list of strings that should be passed to the formula generator when formulas are being added,
         /// or null if the worksheet does not require formulas
         /// </returns>
-        internal static string[] GetFormulaGenerationArguments(string reportName, int worksheetNum, ExcelWorkbook workbook)
+        internal static string[] GetFormulaGenerationArguments(string reportName, int worksheetNum, ExcelWorkbook workbook, string reportVersion)
         {
             switch (reportName)
             {

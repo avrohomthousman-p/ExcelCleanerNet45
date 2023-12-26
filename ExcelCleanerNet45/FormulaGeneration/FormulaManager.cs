@@ -21,8 +21,9 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="sourceFile">the excel file needing formulas, stored as an array/stream of bytes</param>
         /// <param name="reportName">the name of the report</param>
+        /// <param name="reportVersion">the version of the report being unmerged. Null or empty if only one version exists</param>
         /// <returns>the byte stream/arrray of the modified file</returns>
-        public static byte[] AddFormulas(byte[] sourceFile, string reportName)
+        public static byte[] AddFormulas(byte[] sourceFile, string reportName, string reportVersion)
         {
             
             using (ExcelPackage package = new ExcelPackage(new MemoryStream(sourceFile)))
@@ -46,7 +47,7 @@ namespace ExcelCleanerNet45
 
 
                     //Get the formula generator object that will insert the formulas
-                    IFormulaGenerator formulaGenerator = ReportMetaData.ChooseFormulaGenerator(reportName, i, package.Workbook);
+                    IFormulaGenerator formulaGenerator = ReportMetaData.ChooseFormulaGenerator(reportName, i, package.Workbook, reportVersion);
 
 
 
@@ -58,7 +59,7 @@ namespace ExcelCleanerNet45
 
 
                     //get the arguments that are required for the formula generator
-                    headers = ReportMetaData.GetFormulaGenerationArguments(reportName, i, package.Workbook);
+                    headers = ReportMetaData.GetFormulaGenerationArguments(reportName, i, package.Workbook, reportVersion);
 
 
                     //Actually add the formulas

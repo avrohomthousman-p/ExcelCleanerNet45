@@ -105,7 +105,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\CCTransactionsReport.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\InvoiceDetail.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\UnitInvoiceReport.xlsx
-                // C:\Users\avroh\Downloads\PropertyReport.xlsx
+                // C:\Users\avroh\Downloads\PropertyReport version.xlsx
 
 
 
@@ -133,10 +133,10 @@ namespace ExcelCleanerNet45
             }
             else
             {
-                string reportName = GetReportName(filepath);
+                Tuple<string, string> reportData = GetReportName(filepath);
 
                 //Tell the file cleaner to do the cleaning
-                byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(filepath), reportName, true);
+                byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(filepath), reportData.Item1, reportData.Item2, true);
 
 
                 //save the output
@@ -156,14 +156,15 @@ namespace ExcelCleanerNet45
         /// Extracts the report name from the file path given
         /// </summary>
         /// <param name="filename">the name of the report's file</param>
-        /// <returns>the name of the report type</returns>
-        private static string GetReportName(string filename)
+        /// <returns>the name of the report type and the report version</returns>
+        private static Tuple<string,string> GetReportName(string filename)
         {
 
             int start = filename.LastIndexOf('\\') + 1;
             int length;
 
 
+            //First remove the numbers and .xlsx at the end of the file name (and the full file path)
 
             Regex regex = new Regex("^.+(_\\d+)[.]xlsx$"); //matches if the report name ends with an underscore followed by numbers
 
@@ -180,8 +181,21 @@ namespace ExcelCleanerNet45
 
 
 
-            return filename.Substring(start, length);
+            //now seperate the name from the version if the version is present
+
+            filename = filename.Substring(start, length);
+            int whitespace = filename.IndexOf(' ');
+
+            if(whitespace < 0)
+            {
+                return new Tuple<string, string>(filename, "");
+            }
+            else
+            {
+                return new Tuple<string, string>(filename.Substring(0, whitespace), filename.Substring(whitespace + 1));
+            }
         }
+
 
 
 
@@ -200,17 +214,29 @@ namespace ExcelCleanerNet45
                 }
 
 
+                //remove .xlsx from file name
                 string reportName = file.Name.Substring(0, file.Name.Length - 5);
+                string reportVersion = "";
 
                 if (reportName.EndsWith("_fixed"))
                 {
                     continue;
                 }
 
+
+                int whitespace = reportName.IndexOf(' ');
+                if(whitespace >= 0)
+                {
+                    reportVersion = reportName.Substring(whitespace + 1);
+                    reportName = reportName.Substring(0, whitespace);
+                }
+                
+
+
                 Console.WriteLine("cleaning report " + file.Name);
 
                 //Tell the file cleaner to do the cleaning
-                byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(file.FullName), reportName, true);
+                byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(file.FullName), reportName, reportVersion, true);
 
 
                 //save the output

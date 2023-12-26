@@ -109,6 +109,7 @@ namespace ExcelCleanerNet45
                 case "ProfitAndLossStatementByJob":
                     m = new PrimaryMergeCleaner();
                     m.MoveMajorHeaders = false;
+                    m.AddCleanupJob(worksheet => AdditionalCleanupJobs.ApplyColumnMaxWidth(worksheet, 18));
                     return m;
 
 
@@ -123,6 +124,12 @@ namespace ExcelCleanerNet45
                         AdditionalCleanupJobs.RealignSingleHeader(worksheet, "Cash Basis",
                                                 OfficeOpenXml.Style.ExcelHorizontalAlignment.Left);
                     });
+
+
+                    if(reportName == "ProfitAndLossComp")
+                    {
+                        m.AddCleanupJob(worksheet => AdditionalCleanupJobs.ApplyColumnMaxWidth(worksheet, 16));
+                    }
 
 
                     return m;
@@ -256,6 +263,29 @@ namespace ExcelCleanerNet45
 
                 case "Budget":
                     return new ReAlignDataCells();
+
+
+                case "UnitInvoiceReport":
+                    m = new PrimaryMergeCleaner();
+
+                    switch (reportVersion)
+                    {
+                        case "JustAmounts":
+                            m.AddCleanupJob(AdditionalCleanupJobs.RightAlignAllHeadersInFirstRow);
+                            break;
+
+
+
+                        default:
+                            m.AddCleanupJob(worksheet => {
+                                AdditionalCleanupJobs.SetColumnToWrapText(worksheet, "Description");
+                                AdditionalCleanupJobs.SetColumnToMinimumWidth(worksheet, "Due Date", 10.25);
+                            });
+                            break;
+                    }
+
+
+                    return m;
 
 
 

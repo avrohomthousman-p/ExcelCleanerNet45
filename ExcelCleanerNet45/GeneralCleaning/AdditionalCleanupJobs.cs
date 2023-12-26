@@ -37,6 +37,27 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
 
         /// <summary>
+        /// Sets all columns in the worksheet to the specified width ONLY if they are already
+        /// larger than that
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="minWith">the width all columns should not be larger than</param>
+        internal static void ApplyColumnMaxWidth(ExcelWorksheet worksheet, double maxWith)
+        {
+            for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+            {
+                var column = worksheet.Column(col);
+
+                if (column.Width > maxWith)
+                {
+                    column.Width = maxWith;
+                }
+            }
+        }
+
+
+
+        /// <summary>
         /// Corrects the alignment issue that is sometimes found in the BalanceSheetDrillTrough report
         /// </summary>
         /// <param name="worksheet">the worksheet in need of realignment</param>
@@ -122,6 +143,44 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
 
             SetColumnToWrapText(worksheet, topOfColumn.Start.Row + 1, topOfColumn.Start.Column);
+        }
+
+
+
+
+        /// <summary>
+        /// Finds the column with the specified header and ensures its width is no less than the desired width. 
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="columnHeader">the literal text found at the header of that column</param>
+        /// <param name="desiredWidth">the minimum width to be applied to the column</param>
+        internal static void SetColumnToMinimumWidth(ExcelWorksheet worksheet, string columnHeader, double desiredWidth)
+        {
+            var topOfColumn = GetCellWithText(worksheet, columnHeader);
+            if (topOfColumn == null) //if no such column exists
+            {
+                return;
+            }
+
+
+            SetColumnToMinimumWidth(worksheet, topOfColumn.Start.Column, desiredWidth);
+        }
+
+
+
+
+        /// <summary>
+        /// Ensures the specified column has a width that is no less than the desired width. 
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="column">the column number of the column to be resized</param>
+        /// <param name="desiredWidth">the minimum width to be applied to the column</param>
+        internal static void SetColumnToMinimumWidth(ExcelWorksheet worksheet, int column, double desiredWidth)
+        {
+            if(worksheet.Column(column).Width < desiredWidth)
+            {
+                worksheet.Column(column).Width = desiredWidth;
+            }
         }
 
 
@@ -396,6 +455,26 @@ namespace ExcelCleanerNet45.GeneralCleaning
                 {
                     col.Width = DEFAULT_WIDTH;
                 }
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Ensures that all major headers in the first row are right aligned. A major header here, refers
+        /// to any text that appears before the first row in the worksheet with at least 3 non empty cells in it
+        /// </summary>
+        /// <param name="worksheet">the worksheet that needs to be cleaned</param>
+        internal static void RightAlignAllHeadersInFirstRow(ExcelWorksheet worksheet)
+        {
+            int tableStart = FindFirstRowWithMultipleEntries(worksheet, 3);
+
+            ExcelRange cell;
+            for(int i = 1; i < tableStart; i++)
+            {
+                cell = worksheet.Cells[i, 1];
+                cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
             }
         }
     }

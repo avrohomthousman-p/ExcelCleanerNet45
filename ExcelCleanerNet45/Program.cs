@@ -105,7 +105,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\CCTransactionsReport.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\InvoiceDetail.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\UnitInvoiceReport.xlsx
-                // C:\Users\avroh\Downloads\PropertyReport version.xlsx
+                // C:\Users\avroh\Downloads\UnitInvoiceReport_1.xlsx
 
 
 
@@ -133,7 +133,7 @@ namespace ExcelCleanerNet45
             }
             else
             {
-                Tuple<string, string> reportData = GetReportName(filepath);
+                Tuple<string, string> reportData = GetReportNameAndVersion(filepath);
 
                 //Tell the file cleaner to do the cleaning
                 byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(filepath), reportData.Item1, reportData.Item2, true);
@@ -153,11 +153,11 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
-        /// Extracts the report name from the file path given
+        /// Extracts the report name and version from the file path given
         /// </summary>
         /// <param name="filename">the name of the report's file</param>
         /// <returns>the name of the report type and the report version</returns>
-        private static Tuple<string,string> GetReportName(string filename)
+        private static Tuple<string,string> GetReportNameAndVersion(string filename)
         {
 
             int start = filename.LastIndexOf('\\') + 1;
@@ -208,35 +208,28 @@ namespace ExcelCleanerNet45
             DirectoryInfo d = new DirectoryInfo(directory);
             foreach (FileInfo file in d.EnumerateFiles())
             {
+                //ensure that it is an excel file and not some other file
                 if(!file.Name.EndsWith(".xlsx") && !file.Name.EndsWith(".xls"))
                 {
                     continue;
                 }
 
-
-                //remove .xlsx from file name
-                string reportName = file.Name.Substring(0, file.Name.Length - 5);
-                string reportVersion = "";
-
-                if (reportName.EndsWith("_fixed"))
+                //ensure that it hasnt already been cleaned in a previous run
+                Regex regex = new Regex("^.+_[Ff]ixed[.]xls(x)?$"); //matches if the report name has a "fixed"                                                     
+                if (regex.IsMatch(file.Name))
                 {
                     continue;
                 }
 
 
-                int whitespace = reportName.IndexOf(' ');
-                if(whitespace >= 0)
-                {
-                    reportVersion = reportName.Substring(whitespace + 1);
-                    reportName = reportName.Substring(0, whitespace);
-                }
-                
+
+                Tuple<string, string> reportData = GetReportNameAndVersion(file.FullName);                
 
 
                 Console.WriteLine("cleaning report " + file.Name);
 
                 //Tell the file cleaner to do the cleaning
-                byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(file.FullName), reportName, reportVersion, true);
+                byte[] output = FileCleaner.OpenXLSX(ConvertFileToBytes(file.FullName), reportData.Item1, reportData.Item2, true);
 
 
                 //save the output

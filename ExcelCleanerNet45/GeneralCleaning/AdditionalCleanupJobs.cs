@@ -462,11 +462,11 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
 
         /// <summary>
-        /// Ensures that all major headers in the first row are right aligned. A major header here, refers
+        /// Ensures that all major headers in the first row are left aligned. A major header here, refers
         /// to any text that appears before the first row in the worksheet with at least 3 non empty cells in it
         /// </summary>
         /// <param name="worksheet">the worksheet that needs to be cleaned</param>
-        internal static void RightAlignAllHeadersInFirstRow(ExcelWorksheet worksheet)
+        internal static void LeftAlignAllHeadersInFirstRow(ExcelWorksheet worksheet)
         {
             int tableStart = FindFirstRowWithMultipleEntries(worksheet, 3);
 
@@ -474,7 +474,7 @@ namespace ExcelCleanerNet45.GeneralCleaning
             for(int i = 1; i < tableStart; i++)
             {
                 cell = worksheet.Cells[i, 1];
-                cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
             }
         }
     }

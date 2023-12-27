@@ -271,7 +271,7 @@ namespace ExcelCleanerNet45
                     switch (reportVersion)
                     {
                         case "JustAmounts":
-                            m.AddCleanupJob(AdditionalCleanupJobs.RightAlignAllHeadersInFirstRow);
+                            m.AddCleanupJob(AdditionalCleanupJobs.LeftAlignAllHeadersInFirstRow);
                             break;
 
 

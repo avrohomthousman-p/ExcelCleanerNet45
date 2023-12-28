@@ -105,7 +105,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\CCTransactionsReport.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\InvoiceDetail.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\UnitInvoiceReport.xlsx
-                // C:\Users\avroh\Downloads\UnitInvoiceReport_1.xlsx
+                // C:\Users\avroh\Downloads\UnitInvoiceReport JustAmounts_1.xlsx
 
 
 

@@ -646,6 +646,17 @@ namespace ExcelCleanerNet45
 
 
                 case "UnitInvoiceReport":
+                    switch (reportVersion)
+                    {
+                        case "JustAmounts":
+                            return new FullTableFormulaGenerator();
+
+                        default:
+                            return new MultiFormulaGenerator(new PeriodicFormulasOnTop(), new SumOtherSums());
+                    }
+
+
+
                 case "VendorInvoiceReport":
                     return new MultiFormulaGenerator(new PeriodicFormulasOnTop(), new SumOtherSums());
 
@@ -1033,6 +1044,17 @@ namespace ExcelCleanerNet45
 
 
                 case "UnitInvoiceReport":
+                    switch (reportVersion)
+                    {
+                        case "JustAmounts":
+                            return new string[] { "Total:" };
+
+                        default:
+                            return new string[] { "1Amount Owed", "1Amount Paid", "1Balance", "2Total:" };
+                    }
+
+
+
                 case "VendorInvoiceReport":
                     return new string[] { "1Amount Owed", "1Amount Paid", "1Balance", "2Total:" };
 

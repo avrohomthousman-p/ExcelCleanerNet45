@@ -318,6 +318,17 @@ namespace ExcelCleanerNet45.GeneralCleaning
             cell.Delete(eShiftTypeDelete.Left);
             cell = worksheet.Cells[bottomCell.Item1, bottomCell.Item2 - 1];
             cell.Delete(eShiftTypeDelete.Left);
+
+
+
+            //Remove the extra empty cells on the right side of the page
+            cell = new ExcelIterator(worksheet).GetFirstMatchingCell(c => c.Text.Trim() == "Issued");
+            if (cell == null)
+                return;
+            int columnToDelete = cell.End.Column + 1;
+
+            cell = worksheet.Cells[topRow, columnToDelete, bottomCell.Item1 - 1, columnToDelete];
+            cell.Delete(eShiftTypeDelete.Left);
         }
 
 

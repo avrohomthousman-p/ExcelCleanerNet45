@@ -73,8 +73,27 @@ namespace ExcelCleanerNet45
                 case "BalanceSheetDrillthrough":
                     m = new BackupMergeCleaner();
 
+
                     //Make sure all data cells in the data column have the correct alignment
                     m.AddCleanupJob(AdditionalCleanupJobs.RealignDataColumn);
+
+
+
+                    //this report has some of its rows frozen (they stick to the screen as you scroll away)
+                    //we dont want that
+                    m.AddCleanupJob(worksheet => {
+                        ExcelIterator iter = new ExcelIterator(worksheet);
+                        ExcelRange lastFrozenCell = iter.GetFirstMatchingCell(cell => cell.Text.Trim() == "Assets");
+                        if(lastFrozenCell == null)
+                        {
+                            return;
+                        }
+
+                        worksheet.View.UnFreezePanes();
+                        worksheet.View.FreezePanes(lastFrozenCell.Start.Row - 1, worksheet.Dimension.End.Column);
+                    });
+
+
 
                     return m;
 
@@ -88,10 +107,12 @@ namespace ExcelCleanerNet45
                     m.AddCleanupJob(worksheet => {
                         //First find the first data cell, so we can freeze only the rows above it
                         ExcelIterator iter = new ExcelIterator(worksheet);
-                        int row = iter.GetFirstMatchingCell(cell => FormulaManager.IsDollarValue(cell)).Start.Row;
+                        ExcelRange firstDataCell = iter.GetFirstMatchingCell(cell => FormulaManager.IsDollarValue(cell));
+                        if (firstDataCell == null)
+                            return;
 
                         worksheet.View.UnFreezePanes();
-                        worksheet.View.FreezePanes(row, worksheet.Dimension.End.Column);
+                        worksheet.View.FreezePanes(firstDataCell.Start.Row, worksheet.Dimension.End.Column);
                     });
 
                     return m;

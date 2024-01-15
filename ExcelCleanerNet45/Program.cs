@@ -43,7 +43,7 @@ namespace ExcelCleanerNet45
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ProfitAndLossStatementDrillThrough_7232023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\RentRollAll_7232023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\InvoiceDetail_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\LedgerReport_7232023.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\LegalReport_7232023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ReportTenantBal_7232023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\RentRollActivity_New_7232023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\RentRollActivityCompSummary_7232023.xlsx

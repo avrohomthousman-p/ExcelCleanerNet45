@@ -347,6 +347,180 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
+        /// Removes all cell borders above the data table that are not the decorating a major header.
+        /// 
+        /// Sometimes a cell needs a border on the bottom for styling, but instead of it having the border
+        /// on the bottom, the cell below it has a border on top (and the same goes for all sides of the cell).
+        /// For this reason, we cannot remove any borders if the adjacent cell on that side is not empty.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="firstDataRow">the first row that is part of the table</param>
+        protected virtual void RemoveUnwantedBorders(ExcelWorksheet worksheet, int firstDataRow)
+        {
+            ExcelRange cell, adjacentCell;
+
+            for(int row = 1; row < firstDataRow; row++)
+            {
+                for(int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                {
+                    cell = worksheet.Cells[row, col];
+
+                    RemoveCellBorders(worksheet, cell);
+                }
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Removes the border on each side of the specified cell, only if the cell is empty and so is the adjacent 
+        /// cell on that side.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="cell">the cell whose borders should be deleted</param>
+        protected virtual void RemoveCellBorders(ExcelWorksheet worksheet, ExcelRange cell)
+        {
+            ClearTopBorder(worksheet, cell);
+            ClearBottomBorder(worksheet, cell);
+            ClearLeftBorder(worksheet, cell);
+            ClearRightBorder(worksheet, cell);
+        }
+
+
+
+        /// <summary>
+        /// Removes the top border of the specified cell if appropriate
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="cell">the cell whose top border should be cleared</param>
+        protected void ClearTopBorder(ExcelWorksheet worksheet, ExcelRange cell)
+        {
+            if (!IsEmptyCell(cell))
+            {
+                return;
+
+            }
+            if (cell.Style.Border.Top.Style == ExcelBorderStyle.None)
+            {
+                return;
+            }
+            if (cell.End.Row == 1) //if the adjcent cell is out of bounds
+            {
+                cell.Style.Border.Top.Style = ExcelBorderStyle.None;
+                return;
+            }
+
+
+
+            ExcelRange adjacentCell = worksheet.Cells[cell.End.Row - 1, cell.End.Column]; //get cell above
+            if (IsEmptyCell(adjacentCell))
+            {
+                cell.Style.Border.Top.Style = ExcelBorderStyle.None;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Removes the bottom border of the specified cell if appropriate
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="cell">the cell whose bottom border should be cleared</param>
+        protected void ClearBottomBorder(ExcelWorksheet worksheet, ExcelRange cell)
+        {
+            if (!IsEmptyCell(cell))
+            {
+                return;
+            }
+            if (cell.Style.Border.Bottom.Style == ExcelBorderStyle.None)
+            {
+                return;
+            }
+            if (cell.End.Row == worksheet.Dimension.End.Row) //if the adjcent cell is out of bounds
+            {
+                cell.Style.Border.Bottom.Style = ExcelBorderStyle.None;
+                return;
+            }
+
+
+
+            ExcelRange adjacentCell = worksheet.Cells[cell.End.Row + 1, cell.End.Column]; //get cell below
+            if (IsEmptyCell(adjacentCell))
+            {
+                cell.Style.Border.Bottom.Style = ExcelBorderStyle.None;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Removes the left border of the specified cell if appropriate
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="cell">the cell whose left border should be cleared</param>
+        protected void ClearLeftBorder(ExcelWorksheet worksheet, ExcelRange cell)
+        {
+            if (!IsEmptyCell(cell))
+            {
+                return;
+            }
+            if (cell.Style.Border.Left.Style == ExcelBorderStyle.None)
+            {
+                return;
+            }
+            if (cell.End.Column == 1) //if the adjcent cell is out of bounds
+            {
+                cell.Style.Border.Left.Style = ExcelBorderStyle.None;
+                return;
+            }
+
+
+
+            ExcelRange adjacentCell = worksheet.Cells[cell.End.Row, cell.End.Column - 1]; //get cell o the left
+            if (IsEmptyCell(adjacentCell))
+            {
+                cell.Style.Border.Left.Style = ExcelBorderStyle.None;
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Removes the right border of the specified cell if appropriate
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="cell">the cell whose right border should be cleared</param>
+        protected void ClearRightBorder(ExcelWorksheet worksheet, ExcelRange cell)
+        {
+            if (!IsEmptyCell(cell))
+            {
+                return;
+            }
+            if (cell.Style.Border.Right.Style == ExcelBorderStyle.None)
+            {
+                return;
+            }
+            if (cell.End.Row == worksheet.Dimension.End.Column) //if the adjcent cell is out of bounds
+            {
+                cell.Style.Border.Right.Style = ExcelBorderStyle.None;
+                return;
+            }
+
+
+
+            ExcelRange adjacentCell = worksheet.Cells[cell.End.Row, cell.End.Column + 1]; //get cell to the right
+            if (IsEmptyCell(adjacentCell))
+            {
+                cell.Style.Border.Right.Style = ExcelBorderStyle.None;
+            }
+        }
+
+
+
+
+        /// <summary>
         /// Moves the header found at the specified coordinates to the first column of the worksheet if possible 
         /// </summary>
         /// <param name="worksheet">the worksheet being cleaned</param>

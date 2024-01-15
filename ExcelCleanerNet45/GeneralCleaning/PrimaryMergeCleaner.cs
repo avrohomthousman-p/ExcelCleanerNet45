@@ -708,7 +708,9 @@ namespace ExcelCleanerNet45
         /// <inheritdoc/>
         protected override void AdditionalCleanup(ExcelWorksheet worksheet)
         {
-            MoveMajorHeadersLeft(worksheet, firstRowOfTable);
+            base.MoveMajorHeadersLeft(worksheet, firstRowOfTable);
+
+            base.RemoveUnwantedBorders(worksheet, firstRowOfTable);
 
             base.AdditionalCleanup(worksheet);
         }

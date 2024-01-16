@@ -28,6 +28,28 @@ namespace ExcelCleanerNet45
         }
 
 
+        //determans how many columns get moved left.
+        //e.g. if set to 3, only the first 3 columns will get moved left
+        protected int columnsToMove = 3;
+
+
+
+        /// <summary>
+        /// Sets the number of columns whose major headers will be moved to the start of the page.
+        /// For example, this function is called with a 3 passed in, only major headers found in the first 
+        /// 3 columns will be moved to column 1.
+        /// 
+        /// Note: if the MoveMajorHeaders property is turned off, calling this function will not have any effect
+        /// on the program output.
+        /// </summary>
+        /// <param name="columns">the number of columns whose major headers should be moved</param>
+        public virtual void SetNumColumnsToMove(int columns)
+        {
+            columnsToMove = columns;
+        }
+
+
+
 
 
         public virtual void Unmerge(ExcelWorksheet worksheet)
@@ -332,7 +354,7 @@ namespace ExcelCleanerNet45
             }
 
 
-            int lastColumnBeingMoved = Math.Min(3, worksheet.Dimension.End.Column);
+            int lastColumnBeingMoved = Math.Min(this.columnsToMove, worksheet.Dimension.End.Column);
 
             for (int col = 2; col <= lastColumnBeingMoved; col++)
             {

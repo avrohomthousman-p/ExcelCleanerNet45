@@ -131,6 +131,7 @@ namespace ExcelCleanerNet45
                     m = new PrimaryMergeCleaner();
                     m.MoveMajorHeaders = false;
                     m.AddCleanupJob(worksheet => AdditionalCleanupJobs.ApplyColumnMaxWidth(worksheet, 18));
+                    m.AddCleanupJob(worksheet => AdditionalCleanupJobs.MoveMajorHeadersLeft(worksheet, 6, "Cash Basis"));
                     return m;
 
 

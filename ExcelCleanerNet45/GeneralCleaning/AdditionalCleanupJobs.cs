@@ -537,5 +537,83 @@ namespace ExcelCleanerNet45.GeneralCleaning
                 cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
             }
         }
+
+
+
+        /// <summary>
+        /// Like the version of this function in the AbstractMergeCleaner, except that you have to manually set
+        /// how many rows get their headers moved. All text found in the specified area is assumed to be a major header.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="numColumns">the number of columns (starting from the left) that should be moved to column 1</param>
+        /// <param name="stopSignal">the text marking the last row that should have its headers moved</param>
+        internal static void MoveMajorHeadersLeft(ExcelWorksheet worksheet, int numColumns, string stopSignal)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            ExcelRange cell = iter.GetFirstMatchingCell(c => c.Text.Trim() == stopSignal);
+            if(cell == null)
+            {
+                return;
+            }
+
+            MoveMajorHeadersLeft(worksheet, numColumns, cell.End.Row);
+        }
+
+
+
+
+        /// <summary>
+        /// Like the version of this function in the AbstractMergeCleaner, except that you have to manually set
+        /// how many rows get their headers moved. All text found in the specified area is assumed to be a major header.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="numColumns">the number of columns (starting from the left) that should be moved to column 1</param>
+        /// <param name="numRows">the number of rows (starting from the top) that should have their headers moved</param>
+        internal static void MoveMajorHeadersLeft(ExcelWorksheet worksheet, int numColumns, int numRows)
+        {
+            int lastColumnBeingMoved = Math.Min(numColumns, worksheet.Dimension.End.Column);
+
+            for (int col = 2; col <= lastColumnBeingMoved; col++)
+            {
+                for (int row = 1; row <= numRows; row++)
+                {
+                    MoveHeaderIfNeeded(worksheet, row, col);
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Moves the header found at the specified coordinates to the first column of the worksheet if possible.
+        /// 
+        /// This method is a duplicate of one with the same name in the abstract merge cleaner.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="row">the row number of the header cell</param>
+        /// <param name="col">the column number of the header cell</param>
+        /// <returns>true if the header was moved sucsessfully, and false otherwise</returns>
+        private static bool MoveHeaderIfNeeded(ExcelWorksheet worksheet, int row, int col)
+        {
+            ExcelRange source = worksheet.Cells[row, col];
+            ExcelRange dest = worksheet.Cells[row, 1];
+
+            if (!FormulaManager.IsEmptyCell(dest) || FormulaManager.IsEmptyCell(source))
+            {
+                return false;
+            }
+
+
+            source.CopyStyles(dest);
+            dest.Value = source.Value;
+            source.Value = null;
+
+            //headers on the left side of the page must be aligned left or they display off the screen
+            dest.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+            dest.Style.WrapText = false;
+
+            return true;
+        }
     }
 }

@@ -29,81 +29,11 @@ namespace ExcelCleanerNet45
             else
             {
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\AgedAccountsReceivable_7192023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\BankReconcilliation_7192023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\ChargesCreditsReport_7192023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\BalanceSheetPropBreakdown_7192023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\BalanceSheetComp_7192023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\AgedReceivables_7192023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\AgedPayables_7192023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\BalanceSheetComp_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\AgedAccountsReceivable_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\BalanceSheetDrillthrough_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\AdjustmentReport_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\AgedReceivables_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ProfitAndLossStatementDrillThrough_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\RentRollAll_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\InvoiceDetail_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\LegalReport_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ReportTenantBal_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\RentRollActivity_New_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\RentRollActivityCompSummary_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\RentRollHistory_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ReportOutstandingBalance_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ReportCashReceiptsSummary_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ReportCashReceipts_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ProfitAndLossStatementByPeriod_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\PayablesAccountReport_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ReportPayablesRegister_7242023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\PendingWebPayments_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ProfitAndLossBudget_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ProfitAndLossComp_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ChargesCreditsReport_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\RentRollPortfolio_7232023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\PreprintedLeasesReport_7232023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-6\ReportTenantSummary_7252023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-6\TenantDirectory_7252023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-6\VacancyLoss_7252023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-6\SubsidyRentRollReport_7252023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-6\VendorInvoiceReportWithJournalAccounts_7252023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\JournalLedger_8222023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\RentRollActivity_New_8222023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\RentRollActivityItemized_New_8222023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\ReportAccountBalances_8222023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\RentRollAll.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\RentRollAllItemized_8222023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\Budget.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\DistributionsReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\CollectionsAnalysis.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\InvoiceRecurringReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\ProfitAndLossExtendedVariance.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\VendorInvoiceReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\ReportPayablesRegister.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\ProfitAndLossStatementByJob.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\UnitInvoiceReport.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\InvoiceList.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\missing-reports\TrialBalanceVariance.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\RentRollActivityTotals.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\missing-reports\TrialBalance.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\RentRollActivityCompSummary.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\RentRollHistory.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\AgedReceivables.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\RentRollAll.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\RentRollAllItemized.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\RentRollActivity_New.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\RentRollBalanceHistory.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportOutstandingBalance.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportCashReceiptsSummary.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ChargesCreditsReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementDrillthrough_3.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementByPeriod_2.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossBudget.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossComp_3.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ProfitAndLossStatementByJob.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\TrialBalance_2.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\SummaryReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\ReportTenantSummary.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\BalanceSheetDrillthrough.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\CCTransactionsReport.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\InvoiceDetail.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\InvoiceList.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\bugged-reports\UnitInvoiceReport.xlsx
                 // C:\Users\avroh\Downloads\UnitInvoiceReport JustAmounts_1.xlsx
 

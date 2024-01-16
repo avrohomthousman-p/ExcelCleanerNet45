@@ -342,7 +342,8 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
-        /// Ensures that any major header that ends up in column 2 or 3, gets moved to column 1 (if possible)
+        /// Ensures that any major header that ends up in the first few columns, gets moved to column 1 (if possible).
+        /// The number of columns whose headers will be moved can be adjusted by calling the SetNumColumnsToMove function.
         /// </summary>
         /// <param name="worksheet">the worksheet that is being cleaned</param>
         /// <param name="firstDataRow">the row that marks the beginning of the data section. All cells above it are major headers</param>

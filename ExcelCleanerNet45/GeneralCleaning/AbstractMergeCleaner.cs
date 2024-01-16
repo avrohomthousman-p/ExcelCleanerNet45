@@ -381,7 +381,7 @@ namespace ExcelCleanerNet45
             ExcelRange source = worksheet.Cells[row, col];
             ExcelRange dest = worksheet.Cells[row, 1];
 
-            if (!IsEmptyCell(dest))
+            if (!IsEmptyCell(dest) || IsEmptyCell(source))
             {
                 return false;
             }

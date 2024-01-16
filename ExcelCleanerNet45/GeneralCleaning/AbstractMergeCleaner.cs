@@ -370,6 +370,39 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
+        /// Moves the header found at the specified coordinates to the first column of the worksheet if possible 
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="row">the row number of the header cell</param>
+        /// <param name="col">the column number of the header cell</param>
+        /// <returns>true if the header was moved sucsessfully, and false otherwise</returns>
+        protected virtual bool MoveHeaderIfNeeded(ExcelWorksheet worksheet, int row, int col)
+        {
+            ExcelRange source = worksheet.Cells[row, col];
+            ExcelRange dest = worksheet.Cells[row, 1];
+
+            if (!IsEmptyCell(dest))
+            {
+                return false;
+            }
+
+
+            source.CopyStyles(dest);
+            dest.Value = source.Value;
+            source.Value = null;
+
+            //headers on the left side of the page must be aligned left or they display off the screen
+            dest.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+            dest.Style.WrapText = false;
+
+            return true;
+        }
+
+
+
+
+        /// <summary>
         /// Removes all cell borders above the data table that are not the decorating a major header.
         /// 
         /// Sometimes a cell needs a border on the bottom for styling, but instead of it having the border
@@ -538,39 +571,6 @@ namespace ExcelCleanerNet45
             {
                 cell.Style.Border.Right.Style = ExcelBorderStyle.None;
             }
-        }
-
-
-
-
-        /// <summary>
-        /// Moves the header found at the specified coordinates to the first column of the worksheet if possible 
-        /// </summary>
-        /// <param name="worksheet">the worksheet being cleaned</param>
-        /// <param name="row">the row number of the header cell</param>
-        /// <param name="col">the column number of the header cell</param>
-        /// <returns>true if the header was moved sucsessfully, and false otherwise</returns>
-        protected virtual bool MoveHeaderIfNeeded(ExcelWorksheet worksheet, int row, int col)
-        {
-            ExcelRange source = worksheet.Cells[row, col];
-            ExcelRange dest = worksheet.Cells[row, 1];
-
-            if (!IsEmptyCell(dest))
-            {
-                return false;
-            }
-
-
-            source.CopyStyles(dest);
-            dest.Value = source.Value;
-            source.Value = null;
-
-            //headers on the left side of the page must be aligned left or they display off the screen
-            dest.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-
-            dest.Style.WrapText = false;
-
-            return true;
         }
 
 

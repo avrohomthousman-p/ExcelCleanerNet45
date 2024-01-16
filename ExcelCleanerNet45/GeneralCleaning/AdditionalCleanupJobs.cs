@@ -434,18 +434,67 @@ namespace ExcelCleanerNet45.GeneralCleaning
         /// <param name="worksheet">the worksheet being cleaned</param>
         internal static void FixSummariesOfInvoiceList(ExcelWorksheet worksheet)
         {
-            //Deletes some empty cells to move the data cells to where they should be
+            //First find the leftmost cell that is part of the summaries area
+            ExcelIterator iter = new ExcelIterator(worksheet, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column);
+            ExcelRange firstCell = iter.FindAllCellsReverse().FirstOrDefault(c => c.Text.Trim() == "Total:");
 
-            worksheet.DeleteRow(worksheet.Dimension.End.Row);
-            ExcelRange cell = worksheet.Cells[worksheet.Dimension.End.Row - 1, worksheet.Dimension.End.Column - 3, 
-                                                worksheet.Dimension.End.Row - 1, worksheet.Dimension.End.Column - 1];
-
-            cell.Delete(eShiftTypeDelete.Up);
+            //if we cant find any totals near the bottom of the report
+            if (firstCell == null || firstCell.Start.Row <= worksheet.Dimension.End.Row - 8)
+                return;
 
 
-            worksheet.DeleteRow(worksheet.Dimension.End.Row);
-            cell = worksheet.Cells[worksheet.Dimension.End.Row, worksheet.Dimension.End.Column - 1];
-            cell.Delete(eShiftTypeDelete.Left);
+
+
+            //Now find the rightmost cell thats part of the summaries area (on that line)
+            int lastCol;
+            ExcelRange lastCell = iter.GetCells(ExcelIterator.SHIFT_RIGHT)
+                        .LastOrDefault(c => !FormulaManager.IsEmptyCell(c));
+
+            if (lastCell == null)
+                lastCol = firstCell.End.Column;
+            else
+                lastCol = lastCell.End.Column;
+
+
+
+            
+            //Now we want all the totals between firstCell and lastCell moved up one line
+            ExcelRange sectionAbove = worksheet.Cells[firstCell.Start.Row - 1, firstCell.Start.Column, 
+                                                            firstCell.Start.Row - 1, lastCell.End.Column];
+
+            if (!FormulaManager.IsEmptyCell(sectionAbove))
+                return; //we dont want to delete it if there is something there
+            sectionAbove.Delete(eShiftTypeDelete.Up);
+
+
+
+
+
+            //Normally there is an additional summary cell on the new row that is one cell too far the the right.
+            //we need to check if that cell is there. If it is, we need to move it left one cell, and then delete
+            //the column it was in.
+
+            if (lastCell.End.Column == worksheet.Dimension.End.Column)
+                return; //there are no columns after this one to modify
+
+            iter.SetCurrentLocation(lastCell.Start.Row - 1, lastCell.End.Column + 1);//start from the cell after lastCell 
+            ExcelRange otherSummary = iter.GetCells(ExcelIterator.SHIFT_RIGHT)
+                                            .LastOrDefault(c => !FormulaManager.IsEmptyCell(c));
+            if (otherSummary == null)
+                return; //no additional summary cell found
+
+            //get an empty cell between lastCell and otherSummary, and delete it
+            iter.SetCurrentLocation(lastCell.Start.Row - 1, lastCell.End.Column + 1);//move it back to lastCell
+            ExcelRange emptyCell = iter.GetCells(ExcelIterator.SHIFT_RIGHT)
+                                        .FirstOrDefault(c => FormulaManager.IsEmptyCell(c));
+
+
+            if (emptyCell == null)
+                return;
+
+            emptyCell.Delete(eShiftTypeDelete.Left);
+
+            //Not sure why but it seems to work without deleteing the last column
         }
 
 

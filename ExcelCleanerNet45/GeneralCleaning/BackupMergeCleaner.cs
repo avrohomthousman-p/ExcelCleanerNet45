@@ -602,6 +602,8 @@ namespace ExcelCleanerNet45
 
             base.RemoveUnwantedBorders(worksheet, topTableRow);
 
+            base.CleanNonMergedMajorHeaders(worksheet, topTableRow);
+
             base.AdditionalCleanup(worksheet);
         }
 

@@ -403,6 +403,34 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
+        /// Some reports have major headers that take up only one cell (they are not merge cells). Those
+        /// headers do not get their settings adjusted in the unmerge function, so they might need
+        /// settings adjustment.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="firstDataRow">the row above which all non empty cells are considered major headers</param>
+        protected virtual void CleanNonMergedMajorHeaders(ExcelWorksheet worksheet, int firstDataRow)
+        {
+            ExcelRange cell;
+
+            for(int row = 1; row < firstDataRow; row++)
+            {
+                for(int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                {
+                    cell = worksheet.Cells[row, col];
+                    if (!IsEmptyCell(cell))
+                    {
+                        cell.Style.WrapText = false;
+                        ConvertContentsToText(cell); //Ensure that dates are displayed correctly
+                    }
+                }
+            }
+        }
+
+
+
+
+        /// <summary>
         /// Removes all cell borders above the data table that are not the decorating a major header.
         /// 
         /// Sometimes a cell needs a border on the bottom for styling, but instead of it having the border

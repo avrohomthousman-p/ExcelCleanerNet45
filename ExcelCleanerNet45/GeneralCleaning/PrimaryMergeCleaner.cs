@@ -295,7 +295,7 @@ namespace ExcelCleanerNet45
 
                 case MergeType.MAIN_HEADER:
                     currentCells.Style.WrapText = false;
-                    ConvertContentsToText(currentCells); //Ensure that dates are displayed correctly
+                    base.ConvertContentsToText(currentCells); //Ensure that dates are displayed correctly
                     Console.WriteLine("major header at " + currentCells.Address);
                     break;
 
@@ -711,6 +711,8 @@ namespace ExcelCleanerNet45
             base.MoveMajorHeadersLeft(worksheet, firstRowOfTable);
 
             base.RemoveUnwantedBorders(worksheet, firstRowOfTable);
+
+            base.CleanNonMergedMajorHeaders(worksheet, firstRowOfTable);
 
             base.AdditionalCleanup(worksheet);
         }

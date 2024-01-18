@@ -155,6 +155,7 @@ namespace ExcelCleanerNet45
                     else
                     {
                         m.AddCleanupJob(worksheet => AdditionalCleanupJobs.ApplyMinimumWidthToDataColumns(worksheet, 11));
+                        m.AddCleanupJob(AdditionalCleanupJobs.ResizeTitleColumnForPLByPeriod);
                     }
 
 

@@ -29,7 +29,7 @@ namespace ExcelCleanerNet45
             else
             {
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-4\AgedAccountsReceivable_7192023.xlsx
-                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\BalanceSheetComp_7232023.xlsx
+                // C:\Users\avroh\Downloads\ExcelProject\system-reports-5\ProfitAndLossStatementByPeriod_7232023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\system-reports-6\ReportTenantSummary_7252023.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\missing-reports\InvoiceList.xlsx
                 // C:\Users\avroh\Downloads\ExcelProject\missing-reports\TrialBalanceVariance.xlsx

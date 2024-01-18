@@ -643,5 +643,45 @@ namespace ExcelCleanerNet45.GeneralCleaning
             return true;
         }
 
+
+
+
+        /// <summary>
+        /// Fixes issue in some versions of the ProfitAndLossStatementByPeriod report where column
+        /// containing inner titles is too small.
+        /// </summary>
+        /// <param name="worksheet">the worksheet currently being cleaned</param>
+        internal static void ResizeTitleColumnForPLByPeriod(ExcelWorksheet worksheet)
+        {
+            //First fin the column containing the "inner titles"
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            ExcelRange cell = iter.GetFirstMatchingCell(c => c.Text.Trim().ToUpper() == "INCOME");
+
+            if (cell == null)
+                return;
+
+
+            iter.SkipRow();
+            iter.SkipColumn();
+            cell = iter.GetCells(ExcelIterator.SHIFT_RIGHT).First(c => !FormulaManager.IsEmptyCell(c));
+
+            if(cell == null || FormulaManager.IsDollarValue(cell))
+            {
+                return; //this report differes from the standard layout. Best if we don't mess it up
+            }
+
+
+            var column = worksheet.Column(cell.Start.Column);
+            column.AutoFit();
+            column.Width += 2; //the auto resize is usually just a bit too small
+
+
+            //the next column is only there to give space to the overflowing data of this column.
+            //so now that this column is large enough to contain everything, the next column is no longer needed
+            if(SafeToDeleteColumn(worksheet, cell.Start.Column + 1))
+            {
+                worksheet.DeleteColumn(cell.Start.Column + 1);
+            }
+        }
     }
 }

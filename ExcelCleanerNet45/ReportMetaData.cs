@@ -152,6 +152,10 @@ namespace ExcelCleanerNet45
                     {
                         m.AddCleanupJob(worksheet => AdditionalCleanupJobs.ApplyColumnMaxWidth(worksheet, 16));
                     }
+                    else
+                    {
+                        m.AddCleanupJob(worksheet => AdditionalCleanupJobs.ApplyMinimumWidthToDataColumns(worksheet, 11));
+                    }
 
 
                     return m;

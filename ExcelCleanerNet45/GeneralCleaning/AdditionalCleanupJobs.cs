@@ -37,6 +37,33 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
 
         /// <summary>
+        /// Ensures that all data colums (columns containing at least 1 dollar value) have a width no less than
+        /// the specified minimum.
+        /// </summary>
+        /// <param name="worksheet">the worksheet being cleaned</param>
+        /// <param name="minWidth">the desired minimum width</param>
+        internal static void ApplyMinimumWidthToDataColumns(ExcelWorksheet worksheet, double minWidth)
+        {
+            ExcelIterator iter = new ExcelIterator(worksheet);
+            for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+            {
+                iter.SetCurrentLocation(1, col); //move iterator to the start of the current column
+                int numDataCells = iter.GetCells(ExcelIterator.SHIFT_DOWN).Count(c => FormulaManager.IsDollarValue(c));
+                if (numDataCells > 0)
+                {
+                    var column = worksheet.Column(col);
+
+                    if (column.Width < minWidth)
+                    {
+                        column.Width = minWidth;
+                    }
+                }
+            }
+        }
+
+
+
+        /// <summary>
         /// Sets all columns in the worksheet to the specified width ONLY if they are already
         /// larger than that
         /// </summary>
@@ -615,5 +642,6 @@ namespace ExcelCleanerNet45.GeneralCleaning
 
             return true;
         }
+
     }
 }

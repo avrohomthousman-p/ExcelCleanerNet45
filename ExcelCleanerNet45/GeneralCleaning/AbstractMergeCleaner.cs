@@ -34,6 +34,21 @@ namespace ExcelCleanerNet45
 
 
 
+        protected bool removeHeaderBorders = true;
+
+
+        /// <summary>
+        /// Controls if extra border lines are removed from the major header section of the report.
+        /// </summary>
+        public bool RemoveBorders
+        {
+            get { return removeHeaderBorders; }
+            set { removeHeaderBorders = value; }
+        }
+
+
+
+
         /// <summary>
         /// Sets the number of columns whose major headers will be moved to the start of the page.
         /// For example, this function is called with a 3 passed in, only major headers found in the first 
@@ -441,6 +456,12 @@ namespace ExcelCleanerNet45
         /// <param name="firstDataRow">the first row that is part of the table</param>
         protected virtual void RemoveUnwantedBorders(ExcelWorksheet worksheet, int firstDataRow)
         {
+            if (!this.RemoveBorders)
+            {
+                return;
+            }
+
+
             ExcelRange cell, adjacentCell;
 
             for(int row = 1; row < firstDataRow; row++)

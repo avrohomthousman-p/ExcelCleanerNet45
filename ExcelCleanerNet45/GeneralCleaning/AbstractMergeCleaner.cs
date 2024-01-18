@@ -319,11 +319,12 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="worksheet">the worksheet currently being cleaned</param>
         /// <param name="cells">the header cell containing multi-line text</param>
-        protected virtual void SplitHeaderIntoMultipleRows(ExcelWorksheet worksheet, ExcelRange cells)
+        /// <returns>the number of new rows that were inserted</returns>
+        protected virtual int SplitHeaderIntoMultipleRows(ExcelWorksheet worksheet, ExcelRange cells)
         {
             if (!cells.Text.Contains("\n"))
             {
-                return;
+                return 0;
             }
 
 
@@ -352,6 +353,8 @@ namespace ExcelCleanerNet45
             worksheet.Cells[endRow, cells.Start.Column].Style.Border.Bottom.Style = cells.Style.Border.Bottom.Style;
             cells.Style.Border.Bottom.Style = ExcelBorderStyle.None; //remove the bottom border of the top cell
 
+
+            return numNewRows;
         }
 
 

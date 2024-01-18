@@ -330,7 +330,8 @@ namespace ExcelCleanerNet45
             //should not be moved to the leftmost side of the formally merged range.
             if(mergeType == MergeType.MAIN_HEADER)
             {
-                SplitHeaderIntoMultipleRows(worksheet, currentCells);
+                int rowsAdded = base.SplitHeaderIntoMultipleRows(worksheet, currentCells);
+                firstRowOfTable += rowsAdded; //when rows are added above the table, the row number of the table start must be updated
                 MoveMajorHeadersToMatchFormatting(worksheet, currentCells);
 
             }

@@ -228,7 +228,10 @@ namespace ExcelCleanerNet45
             //multiple seperate headers.
             if (mergeType == MergeType.MAIN_HEADER)
             {
-                SplitHeaderIntoMultipleRows(worksheet, currentCells);
+                int rowsAdded = base.SplitHeaderIntoMultipleRows(worksheet, currentCells);
+
+                //when rows are added above the table, the row number of the table start must be updated
+                this.topTableRow += rowsAdded;
             }
 
 

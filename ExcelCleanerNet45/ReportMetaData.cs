@@ -179,6 +179,14 @@ namespace ExcelCleanerNet45
 
 
 
+                case "SubsidyRentRollReport":
+                    m = new PrimaryMergeCleaner();
+                    m.BorderRemoval = AbstractMergeCleaner.BorderRemovalType.ALL;
+                    return m;
+
+
+
+
                 case "ProfitAndLossExtendedVariance":
                     m = new ExtendedVarianceCleaner();
                     m.MoveMajorHeaders = false;

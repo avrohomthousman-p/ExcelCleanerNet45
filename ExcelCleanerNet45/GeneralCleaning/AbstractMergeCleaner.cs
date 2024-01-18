@@ -34,16 +34,22 @@ namespace ExcelCleanerNet45
 
 
 
-        protected bool removeHeaderBorders = true;
+        /// <summary>
+        /// Represents the different ways that borders can be removed from the top section of the report.
+        /// </summary>
+        internal enum BorderRemovalType { NONE, ALL, ONLY_EMPTY_CELLS }
+
+
+        protected BorderRemovalType borderRemovalSelection = BorderRemovalType.ONLY_EMPTY_CELLS;
 
 
         /// <summary>
-        /// Controls if extra border lines are removed from the major header section of the report.
+        /// Controls how border lines are removed from the major header section of the report.
         /// </summary>
-        public bool RemoveBorders
+        public BorderRemovalType BorderRemoval
         {
-            get { return removeHeaderBorders; }
-            set { removeHeaderBorders = value; }
+            get { return borderRemovalSelection; }
+            set { borderRemovalSelection = value; }
         }
 
 
@@ -459,13 +465,13 @@ namespace ExcelCleanerNet45
         /// <param name="firstDataRow">the first row that is part of the table</param>
         protected virtual void RemoveUnwantedBorders(ExcelWorksheet worksheet, int firstDataRow)
         {
-            if (!this.RemoveBorders)
+            if (this.BorderRemoval == BorderRemovalType.NONE)
             {
                 return;
             }
 
 
-            ExcelRange cell, adjacentCell;
+            ExcelRange cell;
 
             for(int row = 1; row < firstDataRow; row++)
             {
@@ -473,7 +479,17 @@ namespace ExcelCleanerNet45
                 {
                     cell = worksheet.Cells[row, col];
 
-                    RemoveCellBorders(worksheet, cell);
+
+                    if(this.BorderRemoval == BorderRemovalType.ONLY_EMPTY_CELLS)
+                    {
+                        RemoveCellBordersIfEmpty(worksheet, cell);
+                    }
+                    else
+                    {
+                        //Just remove all borders whether the cell is empty or not (except the last row)
+                        bool lastRow = (row + 1 == firstDataRow);
+                        ClearAllBorders(cell, lastRow);
+                    }
                 }
             }
         }
@@ -487,7 +503,7 @@ namespace ExcelCleanerNet45
         /// </summary>
         /// <param name="worksheet">the worksheet being cleaned</param>
         /// <param name="cell">the cell whose borders should be deleted</param>
-        protected virtual void RemoveCellBorders(ExcelWorksheet worksheet, ExcelRange cell)
+        protected virtual void RemoveCellBordersIfEmpty(ExcelWorksheet worksheet, ExcelRange cell)
         {
             ClearTopBorder(worksheet, cell);
             ClearBottomBorder(worksheet, cell);
@@ -498,7 +514,9 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
-        /// Removes the top border of the specified cell if appropriate
+        /// Removes the top border of the specified cell if appropriate.
+        /// 
+        /// Note: do not use this function if you want to remove ALL borders and not just those that are for empty cells.
         /// </summary>
         /// <param name="worksheet">the worksheet being cleaned</param>
         /// <param name="cell">the cell whose top border should be cleared</param>
@@ -531,7 +549,9 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
-        /// Removes the bottom border of the specified cell if appropriate
+        /// Removes the bottom border of the specified cell if appropriate.
+        /// 
+        /// Note: do not use this function if you want to remove ALL borders and not just those that are for empty cells.
         /// </summary>
         /// <param name="worksheet">the worksheet being cleaned</param>
         /// <param name="cell">the cell whose bottom border should be cleared</param>
@@ -563,7 +583,9 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
-        /// Removes the left border of the specified cell if appropriate
+        /// Removes the left border of the specified cell if appropriate.
+        /// 
+        /// Note: do not use this function if you want to remove ALL borders and not just those that are for empty cells.
         /// </summary>
         /// <param name="worksheet">the worksheet being cleaned</param>
         /// <param name="cell">the cell whose left border should be cleared</param>
@@ -596,7 +618,9 @@ namespace ExcelCleanerNet45
 
 
         /// <summary>
-        /// Removes the right border of the specified cell if appropriate
+        /// Removes the right border of the specified cell if appropriate.
+        /// 
+        /// Note: do not use this function if you want to remove ALL borders and not just those that are for empty cells.
         /// </summary>
         /// <param name="worksheet">the worksheet being cleaned</param>
         /// <param name="cell">the cell whose right border should be cleared</param>
@@ -622,6 +646,29 @@ namespace ExcelCleanerNet45
             if (IsEmptyCell(adjacentCell))
             {
                 cell.Style.Border.Right.Style = ExcelBorderStyle.None;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Removes all borders regaurdless of the cell contents except for the bottom border
+        /// of the last row. That border is not removed becuase removing it might damage the display 
+        /// of the data table on the row below.
+        /// </summary>
+        /// <param name="cell">the cell that needs its borders removed</param>
+        /// <param name="lastRow">true if the specified cell is on the last row, and false otherwise</param>
+        protected void ClearAllBorders(ExcelRange cell, bool lastRow)
+        {
+            //Just remove all borders whether the cell is empty or not (except the last row)
+            cell.Style.Border.Top.Style = ExcelBorderStyle.None;
+            cell.Style.Border.Left.Style = ExcelBorderStyle.None;
+            cell.Style.Border.Right.Style = ExcelBorderStyle.None;
+
+
+            if (!lastRow)
+            {
+                cell.Style.Border.Bottom.Style = ExcelBorderStyle.None;
             }
         }
 
